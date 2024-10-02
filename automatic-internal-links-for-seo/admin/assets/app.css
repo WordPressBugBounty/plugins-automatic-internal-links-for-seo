@@ -1,0 +1,1115 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap');
+
+:root {
+    --s-font-family: 'Roboto Condensed', sans-serif, system-ui,-apple-system,"Segoe UI","Ubuntu";
+    --s-line-height: 1.5;
+    --s-font-weight: 400;
+    --s-font-size: 16px;
+    --s-outline-width: 3px;
+    --s-spacing: 1rem;
+    --s-spacing-vertical: 2rem;
+    --s-transition: .2s ease-in-out;
+    --s-white: #fff;
+    --s-primary: #F3F4F6;
+    --s-primary-hover: #E5E7EB;
+    --s-primary-darker: #9CA3AF;
+    --s-secondary: #F9FAFB;
+    --s-gradient: linear-gradient(47deg, rgba(53,220,155,1) 0%, rgba(76,46,210,1) 100%);
+    --s-red-bg: #dc354b;
+    --s-red-hover: #c72d42;
+    --s-box-shadow: 0 7px 30px -10px var(--s-primary-darker);
+    --s-border: 1px solid var(--s-primary-darker);
+    --s-green: rgba(53,220,155,1);
+    --s-green-hover: rgb(36, 194, 133);
+    --s-indigo: #4338CA;
+    --s-indigo-hover: #3730A3;
+    --s-disabled: #FEE2E2;
+    --s-disabled-hover: #FECACA;
+    --s-text: #222;
+    --s-text-hover: #777;
+    --s-border-radius: .25rem;
+    --s-full-width: 100%;
+}
+body {
+    background-color: #F9FAFB;
+}
+.container-fluid.ails-container  {
+    width: 95%;
+    margin: var(--s-spacing) 0 var(--s-spacing) 0.3rem;
+    padding: 20px;
+    border-radius: var(--s-border-radius);
+    background: var(--s-primary);
+    background-image: var(--s-primary);
+    box-shadow: var(--s-box-shadow);
+    font-family: var(--s-font-family);
+}
+.ails-container a  {
+    color: var(--s-text);
+    text-decoration: none;
+}
+.ails-container a:hover  {
+    color: var(--s-text-hover);
+}
+.ails-container input:focus, .ails-container select:focus, .ails-container textarea:focus, .ails-container button:focus {
+    outline: none;
+    border-color: var(--s-primary-hover);
+    box-shadow: 0 0 0 1px var(--s-primary-hover);
+}
+.wrap.container-fluid.ails-container .ails-logo {
+    font-size: 24px;
+    font-weight: 700;
+    padding: 1em 0;
+}
+.ails-transition {
+    -webkit-transition: background-color 500ms linear;
+    -moz-transition: background-color 500ms linear;
+    -o-transition: background-color 500ms linear;
+    -ms-transition: background-color 500ms linear;
+    transition: background-color 500ms linear;
+}
+.ails-title {
+    font-size: 24px;
+}
+/*****************************************
+                Form
+*****************************************/
+.ails-container .ails-input,
+.ails-container .ails-select,
+.ails-container .ails-textarea {
+    width: 100%;
+    padding: 2px 10px;
+    color: #333;
+    border: 1px solid var(--s-primary-hover);
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+}
+select.ails-input {
+    max-height: 34px;
+}
+.ails-container .ails-disabled {
+    background-color: #f1f1f1;
+}
+.ails-textarea[disabled] {
+    background-color: #f1f1f1;
+}
+.ails-textarea::placeholder {
+    color: #ccc;
+}
+.ails-container .ails-submit, .ails-btn, a.ails-btn {
+    display: block;
+    width: 100%;
+    background-color: var(--s-green);
+    color: #fff;
+    border: 0;
+    border-radius: 3px;
+    padding: 10px 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-align: center;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.ails-container .ails-btn.red {
+    background-color: var(--s-red-bg);
+}
+.ails-container .ails-btn.red:hover {
+    background-color: var(--s-red-hover);
+}
+
+.ails-container .ails-submit:hover, .ails-btn:hover, a.ails-btn:hover {
+    background-color: var(--s-green-hover);
+    color: #fff;
+}
+
+.ails-container .ails-btn.danger {
+    background-color: var(--s-red-bg);
+    color: #fff;
+}
+.ails-container .ails-btn.danger:hover {
+    background-color: var(--s-red-hover);
+    color: #fff;
+}
+
+.ails-container input:disabled.ails-submit, input:disabled.ails-btn {
+    background-color: var(--s-green-hover);
+    color: #fff;
+    opacity: 0.6;
+    cursor: unset;
+}
+
+.ails-addedon {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background-color: #eee;
+}
+
+.ails-btn.ails-meta {
+    width: auto;
+    font-size: 1rem;
+    line-height: 170%;
+    box-shadow: 3px 3px 6px #ddd;
+}
+.ails-btn.bulk {
+    display: inline-block;
+    width: auto;
+    font-size: 24px;
+    padding: 10px 50px;
+}
+.ails-btn.bulk.ails-disabled {
+    background-color: var(--s-green);
+    opacity: 0.6
+}
+/*****************************************
+            CARD FORM ITEM
+*****************************************/
+.ails-card {
+    position: relative;
+    padding: 1.5rem;
+    background-color: var(--s-secondary);
+    /* border: 1px solid #cfd7e2; */
+    border-radius: var(--s-border-radius);
+
+}
+.ails-card .ails-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    margin: 9;
+    border: 0;
+    background-color: var(--s-red-bg);
+    cursor: pointer;
+}
+.ails-card p {
+    font-size: 13px
+}
+.ails-form .ails-input {
+    width: 100%;
+    padding: 2px 10px;
+    color: #333;
+    outline: none
+}
+.ails-form .ails-textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 5px 10px;
+    color: #333;
+    border: var(--s-border);
+}
+.ails-form .ails-label {
+    display: block;
+    margin-top: 12px;
+    color: var(--s-text)
+}
+.ails-item-header, .ails-item {
+    padding: 1rem 1rem 0;
+    border: 1px solid var(--s-primary-hover);
+    background-color: var(--s-primary-hover);
+    color: var(--s-text);
+    margin-bottom: 5px;
+    font-size: 15px;
+    font-weight: 700;
+}
+.ails-item {
+    background-color: var(--s-primary);
+}
+.ails-item:hover {
+    background-color: var(--s-primary-hover);
+}
+.ails-item.disabled {
+    background-color: var(--s-disabled);
+}
+.ails-item button {
+    display: block;
+    border: 0;
+    width: 100%;
+    padding: 5px 3px;
+    font-size: 10px;
+    line-height: 100%;
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+.ails-red {
+    background-color: var(--s-red-bg);
+}
+.ails-red:hover {
+    background-color: var(--s-red-hover);
+}
+.ails-indigo {
+    background-color: var(--s-indigo);
+}
+.ails-indigo:hover {
+    background-color: var(--s-indigo-hover);
+}
+.ails-item .ails-keyword {
+    display: inline-block;
+    font-weight: 400;
+    border: 1px solid var(--s-secondary);
+    background-color: var(--s-primary-hover);
+    padding: 2px 5px;
+    font-size: 13px;
+    line-height: 100%;
+}
+.ails-item .ails-pt, .ails-log-item .ails-pt {
+    display: block;
+    text-align: center;
+    background-color: #DB2777;
+    padding: 4px 2px 3px;
+    line-height: 100%;
+    font-size: 9px;
+    color: #fff;
+    text-transform: uppercase;
+    margin-left: 5px;
+    font-weight: 500;
+}
+/* .ails-item .ails-keyword {
+    background-color: #DB2777;
+    width: 97%;
+    text-align: center;
+    cursor: unset;
+} */
+/*****************************************
+                TABS
+*****************************************/
+.ails-nav-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+    margin-bottom: 15px;
+}
+
+.ails-flex {
+    display: flex;
+    justify-content: space-between;
+}
+
+.ails-tab.nav-tab {
+    border: 1px solid #eee;
+    padding: 10px 30px;
+    font-size: 15px;
+    background-color: #FFF;
+    color: #333;
+    text-transform: uppercase;
+}
+.ails-tab.nav-tab:hover, .ails-tab.nav-tab.nav-tab-active {
+    background: #eee;
+}
+.nav-tab-wrapper, .wrap h2.nav-tab-wrapper, h1.nav-tab-wrapper {
+    border-bottom: 3px solid #eee;
+}
+
+/*****************************************
+                Segment
+*****************************************/
+.ails-segment {
+    position: relative;
+    padding: 30px 30px;
+    border-radius: 3px;
+    background-color: var(--s-secondary);
+}
+.ails-segment h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+.ails-segment.ails-repeater {
+    border: 1px solid #d5d5d5;
+}
+.ails-segment .ails-btn {
+    background-color: var(--s-primary-hover);
+    color: var(--s-text);
+}
+.ails-segment .ails-btn:hover {
+    background-color: var(--s-primary);
+    color: var(--s-text);
+}
+
+.ails-faq .ails-segment {
+    margin-bottom: 10px;
+}
+.ails-faq p {
+    font-size: 14px;
+}
+/*****************************************
+                Tooltip
+*****************************************/
+/* Tooltip container */
+.ails-tooltip {
+    position: relative;
+    display: inline-block;
+}
+/* Tooltip text */
+.ails-tooltip .ails-tooltiptext {
+    visibility: hidden;
+    width: 300px;
+    background-color: #444444;
+	font-size: 14px;
+    color: #fff;
+    text-align: left;
+    padding: 10px 15px;
+    border-radius: 6px;
+    position: absolute;
+	top: -11px;
+    left: 130%; 
+    z-index: 1;
+}
+.ails-tooltip:hover .ails-tooltiptext {
+    visibility: visible;
+}
+/* .ails-tooltip .ails-tooltiptext::after {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent #444444 transparent transparent;
+} */
+.ails-tooltip-link {
+    color: #fff;
+    float: right!important;
+}
+
+.ails-tooltip.ails-navtip .ails-tooltiptext {
+    width: auto;
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 3px;
+    top: -125%;
+    left: -70%;
+}
+.ails-tooltip.ails-navtip .ails-tooltiptext::after {
+    content: " ";
+    position: absolute;
+    top: 110%;
+    left: 45%; /* To the left of the tooltip */
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #444444 transparent transparent transparent ;
+}
+
+/*****************************************
+            TOGGLE CHECKBOX
+*****************************************/
+.ails-container .ails-toggle {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+  
+.ails-container .ails-toggle input {
+    display:none;
+}
+  
+.ails-container .ails-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--s-primary-hover);
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+.ails-item.disabled .ails-toggle-slider {
+    background-color: var(--s-disabled-hover);
+}
+  
+.ails-container .ails-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 24px;
+    width: 24px;
+    left: 5px;
+    bottom: 5px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.ails-container input:checked + .ails-toggle-slider {
+    background-color: var(--s-green);
+}
+
+.ails-container input:focus + .ails-toggle-slider {
+    box-shadow: 0 0 1px var(--s-green);
+}
+
+.ails-container input:checked + .ails-toggle-slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+
+.ails-container .ails-item .ails-toggle {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 21px;
+}
+.ails-container .ails-item .ails-toggle-slider:before {
+    height: 13px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+}
+
+.ails-container .ails-item .ails-toggle-slider.ails-toggle-round,
+.ails-container .ails-item .ails-toggle-slider.ails-toggle-round:before {
+    border-radius: 0;
+}
+
+/*****************************************
+                ALERTS
+*****************************************/
+.ails-alert {
+    padding: 10px;
+    padding-left: 15px;
+    border-radius: 5px;
+    border-left: 4px solid #3b8fd2;
+    margin: 10px 0 10px;
+    line-height: 150%;
+    color: #fff;
+}
+.ails-alert a {
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+    border-bottom: 1px dotted;
+}
+.ails-alert.ails-info {
+    background-color: #47A8F5;
+}
+.ails-alert.ails-warning {
+    background-color: var(--s-red-bg);
+    border-color: var(--s-red-hover);
+}
+.ails-alert.ails-note a {
+    color: #333;
+}
+.ails-alert.ails-note {
+    color: #333;
+    background-color: var(--s-primary-hover);
+    border-color: var(--s-primary-darker);
+}
+.ails-alert.ails-note .closebtn {
+    color: #333;
+}
+
+.ails-notice {
+    background-color: var(--s-secondary);
+    margin-bottom: 15px;
+    padding: 0 0 0 15px;
+    border-radius: 3px;
+}
+.ails-notice.ails-notice-success {
+    border: 1px solid var(--s-green);
+    border-left: 4px solid var(--s-green);
+    color: var(--s-green);
+}
+.ails-notice.ails-notice-error {
+    border: 1px solid var(--s-red-bg);
+    border-left: 4px solid var(--s-red-bg);
+    color: var(--s-red-bg);
+}
+.ails-notice.ails-notice-info {
+    border: 1px solid var(--s-indigo);
+    border-left: 4px solid var(--s-indigo);
+    color: var(--s-indigo);
+}
+.ails-notice.ails-note {
+    border: 1px solid var(--s-primary-hover);
+    border-left: 4px solid var(--s-primary-hover);
+}
+.ails-notice p, .ails-notice ul {
+    font-size: 16px;
+    text-transform: uppercase;
+}
+/*****************************************
+               UTILS
+*****************************************/
+.closebtn {
+    color: white;
+    float: right;
+    font-size: 22px;
+    line-height: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.closebtn:hover {
+    color: black;
+}
+
+.ails-errors {
+    border: 3px solid var(--s-primary-hover);
+    color: var(--s-red-bg);
+    padding: 10px 10px 1px;
+    margin-bottom: 15px;
+}
+.ails-errors ul {
+    margin: 0;
+    margin-top: 10px;
+}
+
+.ails-comment {
+    margin-bottom: 0;
+    color: #888;
+}
+
+.row {
+    margin-bottom: 15px;
+}
+
+.ails-tag {
+    background-color: #f5f5f5;
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+/*****************************************
+               PAGINATE
+*****************************************/
+.paginate-links.items {
+    user-select: none;
+  }
+  .paginate-links.items li.next:before {
+    content: ' | ';
+    margin-right: 13px;
+    color: #ddd;
+  }
+  .paginate-links.items li.disabled a {
+    color: #ccc;
+    cursor: no-drop;
+  }
+  .paginate-links.items li {
+      display: inline-block;
+      margin-right: 4px;
+  }
+  .paginate-links.items li a {
+      background-color: var(--s-primary);
+      padding: 10px 15px;
+      font-size: 15px;
+      color: #222;
+      cursor: pointer;
+      font-weight: bold;
+  }
+  .paginate-links.items li a:hover {
+    background-color: var(--s-primary-hover);
+    -webkit-transition: background-color 500ms linear;
+    -moz-transition: background-color 500ms linear;
+    -o-transition: background-color 500ms linear;
+    -ms-transition: background-color 500ms linear;
+    transition: background-color 500ms linear;
+  }
+  .paginate-links.items li.active a {
+    background-color: var(--s-primary-hover);
+  }
+  
+  [v-cloak] {
+      display: none;
+  }
+/*****************************************
+                Tooltip
+*****************************************/
+[tooltip] {
+    position: relative; /* opinion 1 */
+  }
+  
+  /* Applies to all tooltips */
+  [tooltip]::before,
+  [tooltip]::after {
+    text-transform: none; /* opinion 2 */
+    font-size: .9em; /* opinion 3 */
+    line-height: 1;
+    user-select: none;
+    pointer-events: none;
+    position: absolute;
+    display: none;
+    opacity: 0;
+  }
+  [tooltip]::before {
+    content: '';
+    border: 5px solid transparent; /* opinion 4 */
+    z-index: 1001; /* absurdity 1 */
+  }
+  [tooltip]::after {
+    content: attr(tooltip); /* magic! */
+    
+    /* most of the rest of this is opinion */
+    font-family: Helvetica, sans-serif;
+    text-align: center;
+    
+    /* 
+      Let the content set the size of the tooltips 
+      but this will also keep them from being obnoxious
+      */
+    min-width: 3em;
+    max-width: 70em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 1.2ch 1.5ch;
+    border-radius: .3ch;
+    box-shadow: 0 1em 2em -.5em rgba(0, 0, 0, 0.35);
+    background: #333;
+    color: #fff;
+    z-index: 1000; /* absurdity 2 */
+  }
+  
+  /* Make the tooltips respond to hover */
+  [tooltip]:hover::before,
+  [tooltip]:hover::after {
+    display: block;
+  }
+  
+  /* don't show empty tooltips */
+  [tooltip='']::before,
+  [tooltip='']::after {
+    display: none !important;
+  }
+  
+  /* FLOW: UP */
+  [tooltip]:not([flow])::before,
+  [tooltip][flow^="up"]::before {
+    bottom: 100%;
+    border-bottom-width: 0;
+    border-top-color: #333;
+  }
+  [tooltip]:not([flow])::after,
+  [tooltip][flow^="up"]::after {
+    bottom: calc(100% + 5px);
+  }
+  [tooltip]:not([flow])::before,
+  [tooltip]:not([flow])::after,
+  [tooltip][flow^="up"]::before,
+  [tooltip][flow^="up"]::after {
+    left: 50%;
+    transform: translate(-50%, -.5em);
+  }
+  
+  /* FLOW: DOWN */
+  [tooltip][flow^="down"]::before {
+    top: 100%;
+    border-top-width: 0;
+    border-bottom-color: #333;
+  }
+  [tooltip][flow^="down"]::after {
+    top: calc(100% + 5px);
+  }
+  [tooltip][flow^="down"]::before,
+  [tooltip][flow^="down"]::after {
+    left: 50%;
+    transform: translate(-50%, .5em);
+  }
+  
+  /* FLOW: LEFT */
+  [tooltip][flow^="left"]::before {
+    top: 50%;
+    border-right-width: 0;
+    border-left-color: #333;
+    left: calc(0em - 5px);
+    transform: translate(-.5em, -50%);
+  }
+  [tooltip][flow^="left"]::after {
+    top: 50%;
+    right: calc(100% + 5px);
+    transform: translate(-.5em, -50%);
+  }
+  
+  /* FLOW: RIGHT */
+  [tooltip][flow^="right"]::before {
+    top: 50%;
+    border-left-width: 0;
+    border-right-color: #333;
+    right: calc(0em - 5px);
+    transform: translate(.5em, -50%);
+  }
+  [tooltip][flow^="right"]::after {
+    top: 50%;
+    left: calc(100% + 5px);
+    transform: translate(.5em, -50%);
+  }
+  
+  /* KEYFRAMES */
+  @keyframes tooltips-vert {
+    to {
+      opacity: .9;
+      transform: translate(-50%, 0);
+    }
+  }
+  
+  @keyframes tooltips-horz {
+    to {
+      opacity: .9;
+      transform: translate(0, -50%);
+    }
+  }
+  
+  /* FX All The Things */ 
+  [tooltip]:not([flow]):hover::before,
+  [tooltip]:not([flow]):hover::after,
+  [tooltip][flow^="up"]:hover::before,
+  [tooltip][flow^="up"]:hover::after,
+  [tooltip][flow^="down"]:hover::before,
+  [tooltip][flow^="down"]:hover::after {
+    animation: tooltips-vert 300ms ease-out forwards;
+  }
+  
+  [tooltip][flow^="left"]:hover::before,
+  [tooltip][flow^="left"]:hover::after,
+  [tooltip][flow^="right"]:hover::before,
+  [tooltip][flow^="right"]:hover::after {
+    animation: tooltips-horz 300ms ease-out forwards;
+  }
+
+.ails-container .dashicons.dashicons-editor-help {
+    line-height: 70%;
+    font-size: 1.2rem;
+    color: #777;
+}
+
+/*****************************************
+                Vue Transition
+*****************************************/
+.ails-slide-fade-enter-active {
+    transition: all .8s ease-in-out;
+}
+.ails-slide-fade-leave-active {
+    transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.ails-slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active below version 2.1.8 */ {
+    transform: translateX(15px);
+    opacity: 0;
+}
+
+/*****************************************
+                SWITCH RADIO
+*****************************************/
+.ails-switch-radio {
+    overflow: hidden;
+    display: inline;
+}
+.ails-switch-radio:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.switch-title {
+  margin-bottom: 6px;
+}
+
+.ails-switch-radio input {
+    position: absolute !important;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    width: 1px;
+    border: 0;
+    overflow: hidden;
+}
+
+.ails-switch-radio label {
+  float: left;
+  background-color: var(--s-primary-hover);
+  color: var(--s-text);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  text-shadow: none;
+  padding: 10px 15px;
+  -webkit-transition: all 0.1s ease-in-out;
+  -moz-transition:    all 0.1s ease-in-out;
+  -ms-transition:     all 0.1s ease-in-out;
+  -o-transition:      all 0.1s ease-in-out;
+  transition:         all 0.1s ease-in-out;
+}
+.ails-switch-radio label:hover {
+    cursor: pointer;
+}
+
+.ails-switch-radio input:checked + label {
+  background-color: var(--s-green);
+  color: #fff;
+}
+
+.ails-switch-radio label.ails-disabled {
+    background-color: #cbcbcb;
+    color: #666;
+}
+
+.v-select {
+    background-color: #fff;
+}
+.vs__dropdown-toggle {
+    border-color: var(--s-primary-hover);
+    border-radius: 0;
+}
+.v-select input {
+    border: 0;
+}
+
+/*****************************************
+                LOGS
+*****************************************/
+.ails-log-item {
+    font-family: monospace;
+    font-size: 13px;
+    line-height: 20px;
+    border-bottom: 1px solid #D1D5DB;
+    padding: 10px 0 0 0;
+    color: #000;
+}
+.ails-log-item a {
+    border-bottom: 1px dashed #000;
+    font-weight: 700;
+}
+.ails-log-item:first-child {
+    border-top: 1px solid #D1D5DB;
+}
+.ails-log-item:nth-child(odd) {
+    background-color: var(--s-primary);
+}
+.ails-log-item a.del {
+    display: none;
+}
+.ails-log-item:hover a.del {
+    display: inline;
+    color: var(--s-red-bg);
+    border-bottom: 1px solid;
+}
+
+.ails-container .ails-log-item .ails-toggle {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 18px;
+}
+.ails-container .ails-log-item .ails-toggle-slider:before {
+    height: 10px;
+    width: 10px;
+    left: 4px;
+    bottom: 4px;
+}
+.ails-log-item .ails-pt, .ails-log-item .fkw {
+    background-color: var(--s-primary-hover);
+    color: #222;
+    font-weight: 700;
+}
+.ails-log-item button {
+    display: inline-block;
+    border: 0;
+    padding: 3px 5px;
+    font-size: 10px;
+    line-height: 100%;
+    background-color: var(--s-red-bg);
+    color: #fff;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.ails-log-header, .ails-sync {
+    background-color: var(--s-primary);
+    min-height: 50px; 
+    padding: 0; 
+    font-weight: 400
+}
+.ails-sync {
+    padding: 1rem 1rem 1.5rem;
+}
+
+
+.ails-log {
+    background-color: #111;
+    color: lime;
+    padding: 20px 20px 10px;
+    font-family: monospace;
+    height: 150px;
+    overflow: auto;
+}
+.ails-log .done {
+    color: yellow;
+}
+ul.ails-log li.error {
+    color: red;
+}
+ul.ails-log li ul {
+    list-style-type: disc;
+    margin-left: 15px;
+}
+
+.col-xs-1.ails-col {
+    -ms-flex-preferred-size: 5.33333333%;
+    flex-basis: 5.33333333%;
+    max-width: 5.33333333%;
+}
+
+.ails-stats {
+    background-color: var(--s-primary);
+    padding: 10px;
+    text-align: center;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+.ails-checkbox {
+    display: inline-block;
+    background-color: var(--s-primary-hover);
+    padding: 8px 8px 6px;
+    margin-bottom: 4px;
+    line-height: 100%;
+}
+
+.ails-banner {
+    display: block;
+    background-color: var(--s-green);
+    padding: 15px;
+    border: 2px dotted #fff;
+    box-shadow: 3px 3px 3px  var(--s-primary);
+}
+.ails-banner:hover {
+    background-color: var(--s-green-hover);
+}
+.ails-banner .ails-head {
+    display: flex;
+    align-items: center;
+}
+.ails-banner h3 {
+   font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin: 0;
+}
+.ails-banner p {
+    font-size: 13px;
+    margin: 5px 0 0;
+}
+.ails-banner .ails-icon {
+    width: 1.2em;
+    height: 1.2em;
+    margin-right: 10px;
+    font-size: 30px;
+}
+.ails-banner h3, .ails-banner p, .ails-banner .ails-icon {
+    color: #fff;
+}
+
+
+.ails-pro {
+    background-color: var(--s-indigo);
+    padding: 20px 10px;
+    margin: 30px 0 0;
+    border-radius: 3px;
+    color: #fff;
+    box-shadow: 5px 5px 5px var(--s-primary-hover);
+}
+
+.ails-pro, .ails-pro .ails-label, .ails-pro .dashicons.dashicons-editor-help {
+    color: #fff;
+}
+.ails-pro .ails-toggle-slider {
+    background-color: #665fb9;
+}
+.ails-pro input:checked + .ails-toggle-slider {
+    background-color: var(--s-red-bg);
+}
+.ails-pro h3 {
+    font-size: 24px;
+    color: #fff;
+    margin: 10px 0;
+}
+.ails-pro h4 {
+    margin: 0 0 20px;;
+    font-weight: 400;
+    font-size: 17px;
+}
+.ails-pro .ails-label {
+  font-size: 15px;
+}
+.ails-pro a {
+    color: #fff;
+    border-bottom: 1px dotted;
+    font-size: 15px;
+}
+.ails-pro a:hover {
+    color: #a39cff;
+}
+.ails-pro .ails-line {
+  display: inline-block; 
+  margin-left: 10px;
+  font-size: 15px;
+}
+
+@media only screen and (min-width: 64em) {
+    .ails-selected {
+        max-width: 2.33333333%;
+    }
+}
+
+
+
+.progress-container {
+    box-shadow: 0 4px 5px rgb(0, 0, 0, 0.1)
+}
+
+.progress-container, .progress {
+    background-color: #eee;
+    border-radius: 5px;
+    position: relative;
+    height: 15px;
+    width: 100%;
+}
+  
+  .progress {
+    background-color: var(--s-green);
+    width: 0;
+    transition: width 0.4s linear;
+  }
+  
+  .percentage {
+    background-color: var(--s-green);
+    border-radius: 5px;
+    box-shadow: 0 4px 5px rgb(0, 0, 0, 0.2);
+    color: #fff;
+    font-size: 12px;
+    padding: 4px;
+    position: absolute;
+    top: 20px;
+    left: 0;
+    transform: translateX(-50%);
+    width: 40px;
+    text-align: center;
+    transition: left 0.4s linear;
+  }
+  
+  .percentage::after {
+    background-color: var(--s-green);
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    height: 10px;
+    width: 10px;
+    z-index: -1;
+  }
