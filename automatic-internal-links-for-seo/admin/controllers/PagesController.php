@@ -90,6 +90,8 @@ class PagesController extends SettingsController
 
         $post_types = $this->cpts( ['attachment'] );
 
+        $blacklist = $this->blacklist_urls();
+
         $nonce = wp_create_nonce( 'crud_link' );
 
         $total_items_require_sync = $this->get_total_pages_and_items();
@@ -108,7 +110,7 @@ class PagesController extends SettingsController
         $active_tab = ( isset( $_GET['tab'] ) && in_array( $_GET['tab'], $safe ) ? sanitize_key($_GET['tab']) : 'settings' );
 
         if( $active_tab == 'settings' ) {
-            return Plugin::view('settings', compact('options', 'total_items_require_sync', 'total_items_in_logs', 'memory_notification', 'post_types', 'updated', 'deleting'));
+            return Plugin::view('settings', compact('options', 'total_items_require_sync', 'total_items_in_logs', 'memory_notification', 'post_types', 'blacklist', 'updated', 'deleting'));
         }
 
         if( $active_tab == 'help' ) {

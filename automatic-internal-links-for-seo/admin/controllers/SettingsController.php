@@ -276,5 +276,35 @@ class SettingsController
         return $post_type_obj->labels->singular_name;
     }
 
+    /**
+     * Get the list of blacklist URL's string from Options, converts it to an array, and use the array map function to convert each URL to a string.
+     * 
+     * @return string
+     */
+    public function blacklist_urls(): string
+    {
+        $blacklist = Option::check('blacklist') ? Option::get('blacklist') : '';
+        
+        // If empty, return empty string
+        if (empty($blacklist)) {
+            return '';
+        }
+        
+        // If it's a serialized array of IDs, convert to URLs
+        if (is_serialized($blacklist)) {
+            $ids_array = maybe_unserialize($blacklist);
+            
+            // Convert IDs to URLs
+            $urls_array = array_map(function($id) {
+                return get_permalink($id);
+            }, $ids_array);
+            
+            return implode("\n", array_filter($urls_array));
+        }
+        
+        // If it's not serialized, it's already URLs, just return as is
+        return $blacklist;
+    }
+
 }
 $settings = new SettingsController();

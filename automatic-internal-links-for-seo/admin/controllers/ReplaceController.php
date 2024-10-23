@@ -24,28 +24,29 @@ class ReplaceController
     {
         global $wpdb;
 
-        $item = get_transient( "ails_item_{$post_id}" );
+        $item = get_transient( "ailsitem{$post_id}" );
 
         if ( false === $item ) {
-            // Query the database if the results are not in transient
-            // $sql = "SELECT * FROM $this->table_log WHERE INSTR('$content', keyword) > 0";
-            $sql = "SELECT * FROM 
-            (SELECT * FROM $this->table_log WHERE INSTR('$content', keyword) > 0 
-            UNION ALL 
-            SELECT * FROM $this->table WHERE INSTR('$content', keyword) > 0) 
-            AS combined_tables 
-            ORDER BY priority ASC, created_at ASC";
+            // Prepare the SQL query with proper escaping
+            $sql = $wpdb->prepare(
+                "SELECT * FROM 
+                (SELECT * FROM $this->table_log WHERE INSTR(%s, keyword) > 0 
+                UNION ALL 
+                SELECT * FROM $this->table WHERE INSTR(%s, keyword) > 0) 
+                AS combined_tables 
+                ORDER BY priority ASC, created_at ASC",
+                $content, $content
+            );
 
             $item = $wpdb->get_results($sql);
 
             $time = 60 * 60 * 24 * $expiration;
 
             // Cache the query results in transient for future use
-            set_transient( "ails_item_{$post_id}", $item, $time );
+            set_transient( "ailsitem{$post_id}", $item, $time );
         }
 
         return $item;
-
     }
 
     /**
@@ -66,7 +67,7 @@ class ReplaceController
             return $content;
         }
 
-        $post_types = Option::check('post_types') ? Option::get('post_types') : ['post', 'page'];
+        $post_types = Option::check('post_types') ? maybe_unserialize(Option::get('post_types')) : ['post', 'page'];
 
         $exclude = Option::check('exclude_keywords') ? Option::get('exclude_keywords') : "";
 
@@ -182,14 +183,26 @@ class ReplaceController
     {
         $blacklist = Option::check('blacklist') ? Option::get('blacklist') : '';
         
+        // If empty, return empty array
+        if (empty($blacklist)) {
+            return [];
+        }
+
+        // If it's serialized array, just return it unserialized
+        if (is_serialized($blacklist)) {
+            return maybe_unserialize($blacklist);
+        }
+        
+        // If it's text URLs, split into array and convert to IDs
         $urls_array = explode("\n", str_replace("\r", "", $blacklist));
+        $urls_array = array_filter($urls_array); // Remove empty lines
 
         // Convert URL's to Id's
-        $ids_array = array_map( function($link) {
+        $ids_array = array_map(function($link) {
             return url_to_postid($link);
         }, $urls_array);
 
-        return $ids_array;
+        return array_filter($ids_array); // Remove any zero IDs
     }
 
     /**
