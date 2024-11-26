@@ -73,93 +73,98 @@ class LinksController extends SettingsController
      * Ajax request to bulk add items in logs table (sync request)
     */
     public function bulk_add() {
-
         global $wpdb;
-
-        $log_table = AILS_LOG_TABLE;
-    
-        // check the nonce
-        if ( check_ajax_referer( 'crud_link', 'nonce', false ) == false ) {
-            wp_send_json_error( "Invalid nonce", 401 );
-            wp_die();
-        }
-
-        $post_id = sanitize_text_field($_POST['post_id']);
         
-        $wptexturize = remove_filter( 'the_title', 'wptexturize' );
+        // Check capabilities
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Unauthorized access', 403);
+        }
+    
+        // Check nonce
+        if (!check_ajax_referer('crud_link', 'nonce', false)) {
+            wp_send_json_error('Invalid nonce', 401);
+        }
+    
+        // Validate post_id
+        $post_id = isset($_POST['post_id']) ? absint($_POST['post_id']) : 0;
+        if ($post_id === 0) {
+            wp_send_json_error('Invalid post ID', 400);
+        }
+    
+        // Sanitize title
+        $wptexturize = remove_filter('the_title', 'wptexturize');
         $title = sanitize_text_field($_POST['title']);
-        if ( $wptexturize ) add_filter( 'the_title', 'wptexturize' );
-
+        if ($wptexturize) {
+            add_filter('the_title', 'wptexturize');
+        }
+    
+        // Prepare data with proper sanitization
         $data = array(
             'post_id' => $post_id,
             'title' => $title,
             'keyword' => sanitize_text_field($_POST['keyword']),
-            'url' => sanitize_text_field($_POST['url']),
-            'use_custom' => sanitize_text_field(boolval($_POST['use_custom'])),
-            'new_tab' => sanitize_text_field(boolval($_POST['new_tab'])) ? 1 : 0,
-            'nofollow' => sanitize_text_field(boolval($_POST['nofollow'])) ? 1 : 0,
-            'partial_match' => sanitize_text_field(boolval($_POST['partial_match'])) ? 1 : 0,
-            'bold' => sanitize_text_field(boolval($_POST['bold'])) ? 1 : 0,
-            'case_sensitive' => sanitize_text_field(boolval($_POST['case_sensitive'])) ? 1 : 0,
-            'priority' => sanitize_text_field($_POST['priority']),
-            'max_links' => sanitize_text_field($_POST['max_links']),
+            'url' => esc_url_raw($_POST['url']),
+            'use_custom' => absint(isset($_POST['use_custom']) && $_POST['use_custom']),
+            'new_tab' => absint(isset($_POST['new_tab']) && $_POST['new_tab']),
+            'nofollow' => absint(isset($_POST['nofollow']) && $_POST['nofollow']),
+            'partial_match' => absint(isset($_POST['partial_match']) && $_POST['partial_match']),
+            'bold' => absint(isset($_POST['bold']) && $_POST['bold']),
+            'case_sensitive' => absint(isset($_POST['case_sensitive']) && $_POST['case_sensitive']),
+            'priority' => absint($_POST['priority']),
+            'max_links' => absint($_POST['max_links']),
             'post_type' => $this->post_type($post_id)
         );
-
-        $errors = [];
-        $errors = $this->required($data, $errors);
-
-        if ( count($errors) > 0 ) {
-            wp_send_json_error( array( 
+    
+        $errors = $this->required($data, []);
+    
+        if (count($errors) > 0) {
+            wp_send_json_error([
                 'errors' => $errors,
                 'link' => $data
-            ), 400 );
-            wp_die();
+            ], 400);
         }
-        
-        if ( empty($errors) ) {
-
-            $item = $wpdb->get_row( "SELECT * FROM $log_table WHERE post_id = $post_id" );
-
-            if ( $item === NULL ) {
-
-                $result = $wpdb->insert(
-                    $log_table, 
-                    $data,
-                    array( '%d', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%s' )
-                );
-            
-                if ( $result === false ) {
-                    
-                    array_push($errors, '"'. $data['title'] . '" is not added. Something went wrong.' );
-
-                    wp_send_json_error( array( 
-                        'errors' => $errors,
-                        'link' => $data
-                    ), 400 );
-
-                } else {
-
-                    $lastid = $wpdb->insert_id;
-            
-                    $link = $wpdb->get_row( "SELECT * FROM $log_table WHERE id = $lastid" );
-            
-                    wp_send_json_success( [
-                        'message' => $link->title . " link has been created",
-                        'link' => $link
-                    ] );
-                }
-            } else {
-                wp_send_json_error( array( 
-                    'errors' => ['Link already exists'],
+    
+        // Check for existing item using prepared statement
+        $log_table = AILS_LOG_TABLE;
+        $item = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT * FROM $log_table WHERE post_id = %d",
+                $post_id
+            )
+        );
+    
+        if ($item === null) {
+            $result = $wpdb->insert(
+                $log_table,
+                $data,
+                array('%d', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%s')
+            );
+    
+            if ($result === false) {
+                wp_send_json_error([
+                    'errors' => [sprintf('"%s" is not added. Something went wrong.', $data['title'])],
                     'link' => $data
-                ), 400 );
+                ], 400);
             }
-
+    
+            $lastid = $wpdb->insert_id;
+            $link = $wpdb->get_row(
+                $wpdb->prepare(
+                    "SELECT * FROM $log_table WHERE id = %d",
+                    $lastid
+                )
+            );
+    
+            wp_send_json_success([
+                'message' => $link->title . ' link has been created',
+                'link' => $link
+            ]);
+        } else {
+            wp_send_json_error([
+                'errors' => ['Link already exists'],
+                'link' => $data
+            ], 400);
         }
-    
-        wp_die();
-    
     }
 
     /**
@@ -321,93 +326,113 @@ class LinksController extends SettingsController
     public function update_status() {
         global $wpdb;
     
-        // check the nonce
-        if ( check_ajax_referer( 'crud_link', 'nonce', false ) == false ) {
-            wp_send_json_error( "Invalid nonce", 401 );
-            wp_die();
+        // Check capabilities
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Unauthorized access', 403);
         }
-
-        $link_id = sanitize_text_field(intval($_POST['id']));
+    
+        // Check nonce
+        if (!check_ajax_referer('crud_link', 'nonce', false)) {
+            wp_send_json_error('Invalid nonce', 401);
+        }
+    
+        // Validate ID
+        $link_id = isset($_POST['id']) ? absint($_POST['id']) : 0;
+        if ($link_id === 0) {
+            wp_send_json_error('Invalid ID', 400);
+        }
+    
+        // Validate status
+        $status = isset($_POST['status']) && $_POST['status'] === 'true' ? 1 : 0;
     
         $updated = $wpdb->update( 
             $this->table, 
-            array(
-                'status' => sanitize_text_field($_POST['status']) == 'true' ? 1 : 0,
-            ),
-            array( 
-                'id' => $link_id
-            ),
-            array( '%d' ),
-            array( '%d' )
+            ['status' => $status],
+            ['id' => $link_id],
+            ['%d'],
+            ['%d']
         );
     
-        if ( $updated === false ) {
-
-            wp_send_json_error( "Something went wrong", 401 );
-
-        } else {
-    
-            $link = $wpdb->get_row( "SELECT * FROM $this->table WHERE id = $link_id" );
-    
-            wp_send_json_success( [
-                'message' => "Status has been updated successfully",
-                'link' => $link
-            ] );
-
-            // Delete cache items
-            $this->delete_all_transients();
+        if ($updated === false) {
+            wp_send_json_error('Something went wrong', 400);
         }
     
-        wp_die();
+        // Use prepared statement for SELECT
+        $link = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT * FROM {$this->table} WHERE id = %d",
+                $link_id
+            )
+        );
     
+        if (!$link) {
+            wp_send_json_error('Link not found', 404);
+        }
+    
+        // Delete cache items
+        $this->delete_all_transients();
+    
+        wp_send_json_success([
+            'message' => 'Status has been updated successfully',
+            'link' => $link
+        ]);
     }
-
+    
     /**
      * Ajax request to delete item (manual internal links)
     */
     public function delete_item() {
         global $wpdb;
     
-        // check the nonce
-        if ( check_ajax_referer( 'crud_link', 'nonce', false ) == false ) {
-            wp_send_json_error( "Invalid nonce", 401 );
-            wp_die();
+        // Check capabilities
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Unauthorized access', 403);
         }
     
-        $id = sanitize_text_field(intval($_POST['id']));
-
-        if (isset($_POST['table']) && !empty( $_POST['table'] )) {
-            $table = $this->table_log;
-        } else {
-            $table = $this->table;
+        // Check nonce
+        if (!check_ajax_referer('crud_link', 'nonce', false)) {
+            wp_send_json_error('Invalid nonce', 401);
         }
     
-        $item = $wpdb->get_row( "SELECT title FROM $table WHERE id = $id" );
+        // Validate ID
+        $id = isset($_POST['id']) ? absint($_POST['id']) : 0;
+        if ($id === 0) {
+            wp_send_json_error('Invalid ID', 400);
+        }
     
-        $deleted = $wpdb->delete(
-            $table, 
-            array(
-                'id' => $id
+        // Determine which table to use
+        $table = isset($_POST['table']) && !empty($_POST['table']) 
+            ? $this->table_log 
+            : $this->table;
+    
+        // Get item title before deletion using prepared statement
+        $item = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT title FROM {$table} WHERE id = %d",
+                $id
             )
         );
     
-        if ( $deleted === false ) {
-
-            wp_send_json_error( 'Something went wrong. Item not deleted', 400);
-
-        } else {
-
-            wp_send_json_success( [
-                'message' => $item->title . " has been deleted",
-            ] );
-
-            // Delete cache items
-            $this->delete_all_transients();
-
+        if (!$item) {
+            wp_send_json_error('Item not found', 404);
         }
     
-        wp_die();
+        $deleted = $wpdb->delete(
+            $table, 
+            ['id' => $id],
+            ['%d']
+        );
     
+        if ($deleted === false) {
+            wp_send_json_error('Something went wrong. Item not deleted', 400);
+        }
+    
+        // Delete cache items
+        $this->delete_all_transients();
+    
+        wp_send_json_success([
+            'message' => $item->title . ' has been deleted'
+        ]);
     }
 
     /**
