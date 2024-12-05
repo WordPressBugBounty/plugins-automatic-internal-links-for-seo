@@ -183,26 +183,14 @@ class ReplaceController
     {
         $blacklist = Option::check('blacklist') ? Option::get('blacklist') : '';
         
-        // If empty, return empty array
-        if (empty($blacklist)) {
-            return [];
-        }
-
-        // If it's serialized array, just return it unserialized
-        if (is_serialized($blacklist)) {
-            return maybe_unserialize($blacklist);
-        }
-        
-        // If it's text URLs, split into array and convert to IDs
         $urls_array = explode("\n", str_replace("\r", "", $blacklist));
-        $urls_array = array_filter($urls_array); // Remove empty lines
 
         // Convert URL's to Id's
-        $ids_array = array_map(function($link) {
+        $ids_array = array_map( function($link) {
             return url_to_postid($link);
         }, $urls_array);
 
-        return array_filter($ids_array); // Remove any zero IDs
+        return $ids_array;
     }
 
     /**
@@ -217,5 +205,3 @@ class ReplaceController
     }
 
 }
-
-$ReplaceController = new ReplaceController;

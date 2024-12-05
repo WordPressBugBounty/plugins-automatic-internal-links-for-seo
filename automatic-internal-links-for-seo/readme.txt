@@ -2,9 +2,9 @@
 Contributors: the-rock, pagup, freemius
 Tags: Automatic linking, Internal links, Link building, SEO, User experience
 Requires at least: 4.1
-Requires PHP: 5.6
-Tested up to: 6.6
-Stable tag: 1.2.2
+Requires PHP: 7.4
+Tested up to: 6.7
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -239,3 +239,19 @@ YES. This plugin was made to avoid this type of issue.
 
 = 1.2.2 =
 * 🐛 FIX: Security issue.
+
+= 2.0.0 =
+* 🎉 NEW: Completely redesigned options interface with modern tab-based navigation
+* 🎉 NEW: All in One SEO plugin compatibility added
+* ⭐ PRO: Background Auto-Sync feature with configurable batch size and schedule
+* 👌 IMPROVE: Streamlined manual link creation process
+* 👌 IMPROVE: Enhanced activity log browsing and management
+* 👌 IMPROVE: Completely refactored codebase for better performance
+* 👌 IMPROVE: Better error handling and user notifications
+* 👌 IMPROVE: More intuitive settings organization
+* 👌 IMPROVE: Simplified navigation between different functions
+* 👌 IMPROVE: Enhanced bulk operations for links management
+* 👌 IMPROVE: More efficient database operations
+* 🐛 FIX: Various UI/UX inconsistencies from previous versions
+* 👌 IMPROVE: Updated Freemius to v2.9.0
+* 🚨 NOTE: Major update with significant improvements in stability and performance

@@ -1,11 +1,15 @@
 {
     "autoload": {
-        "classmap": [
-            "core/",
-            "admin/"
-        ]
+        "psr-4": {
+            "Pagup\\AutoLinks\\": "admin/",
+            "Pagup\\AutoLinks\\Core\\": "admin/core/",
+            "Pagup\\AutoLinks\\Controllers\\": "admin/controllers/",
+            "Pagup\\AutoLinks\\Traits\\": "admin/traits/",
+            "Pagup\\AutoLinks\\Bootstrap\\": "bootstrap/"
+        }
     },
     "require": {
+        "php": ">=7.4",
         "friedolinfoerder/html-changer": "^0.1.6"
     }
 }

@@ -135,6 +135,15 @@ select.ails-input {
     color: #fff;
 }
 
+.ails-btn.del {
+    display: inline-block;
+    width: auto;
+    font-size: 10px;
+    padding: 4px 8px;
+    color: #fff;
+    background-color: var(--afkw-red);
+}
+
 .ails-container input:disabled.ails-submit, input:disabled.ails-btn {
     background-color: var(--s-green-hover);
     color: #fff;
@@ -1112,4 +1121,12 @@ ul.ails-log li ul {
     height: 10px;
     width: 10px;
     z-index: -1;
+  }
+
+  ul.ails-sync-items li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5em 0.5em 0.5em 1em;
+    background-color: var(--afkw-gray);
   }

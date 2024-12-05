@@ -12,6 +12,14 @@ class ComposerStaticInit902146bc62f26ff98317ab6a3c99c69d
             'html_changer\\testing\\' => 21,
             'html_changer\\' => 13,
         ),
+        'P' => 
+        array (
+            'Pagup\\AutoLinks\\Traits\\' => 23,
+            'Pagup\\AutoLinks\\Core\\' => 21,
+            'Pagup\\AutoLinks\\Controllers\\' => 28,
+            'Pagup\\AutoLinks\\Bootstrap\\' => 26,
+            'Pagup\\AutoLinks\\' => 16,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -23,22 +31,30 @@ class ComposerStaticInit902146bc62f26ff98317ab6a3c99c69d
         array (
             0 => __DIR__ . '/..' . '/friedolinfoerder/html-changer/src',
         ),
+        'Pagup\\AutoLinks\\Traits\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/admin/traits',
+        ),
+        'Pagup\\AutoLinks\\Core\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/admin/core',
+        ),
+        'Pagup\\AutoLinks\\Controllers\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/admin/controllers',
+        ),
+        'Pagup\\AutoLinks\\Bootstrap\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/bootstrap',
+        ),
+        'Pagup\\AutoLinks\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/admin',
+        ),
     );
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'Pagup\\AutoLinks\\Controllers\\DBController' => __DIR__ . '/../..' . '/admin/controllers/DBController.php',
-        'Pagup\\AutoLinks\\Controllers\\LinksController' => __DIR__ . '/../..' . '/admin/controllers/LinksController.php',
-        'Pagup\\AutoLinks\\Controllers\\MetaboxController' => __DIR__ . '/../..' . '/admin/controllers/MetaboxController.php',
-        'Pagup\\AutoLinks\\Controllers\\PagesController' => __DIR__ . '/../..' . '/admin/controllers/PagesController.php',
-        'Pagup\\AutoLinks\\Controllers\\ReplaceController' => __DIR__ . '/../..' . '/admin/controllers/ReplaceController.php',
-        'Pagup\\AutoLinks\\Controllers\\SettingsController' => __DIR__ . '/../..' . '/admin/controllers/SettingsController.php',
-        'Pagup\\AutoLinks\\Core\\Asset' => __DIR__ . '/../..' . '/core/Asset.php',
-        'Pagup\\AutoLinks\\Core\\Option' => __DIR__ . '/../..' . '/core/Option.php',
-        'Pagup\\AutoLinks\\Core\\Plugin' => __DIR__ . '/../..' . '/core/Plugin.php',
-        'Pagup\\AutoLinks\\Core\\Request' => __DIR__ . '/../..' . '/core/Request.php',
-        'Pagup\\AutoLinks\\Settings' => __DIR__ . '/../..' . '/admin/Settings.php',
-        'Pagup\\AutoLinks\\Traits\\Helpers' => __DIR__ . '/../..' . '/admin/traits/Helpers.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

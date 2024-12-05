@@ -3,177 +3,151 @@
 namespace Pagup\AutoLinks\Controllers;
 
 use Pagup\AutoLinks\Core\Option;
-use Pagup\AutoLinks\Core\Plugin;
-use Pagup\AutoLinks\Controllers\LinksController;
+use Pagup\AutoLinks\Traits\SettingHelper;
+use Pagup\AutoLinks\Controllers\DBController;
 use Pagup\AutoLinks\Controllers\SettingsController;
 
 class PagesController extends SettingsController
 {
-    private $table = AILS_TABLE;
-    private $table_log = AILS_LOG_TABLE;
+    use SettingHelper;
     
+    /**
+     * Add a top-level menu page for the plugin.
+     *
+     * This creates the "Auto Links" menu item in the WordPress admin sidebar.
+     *
+     * @since 1.0.0
+     */
     public function add_page()
     {
         add_menu_page (
 			'Automatic Internal Links for SEO',
-            'Auto Links for SEO',
+            'Auto Links',
             'manage_options',
             'automatic-internal-links-for-seo',
-			array( &$this, 'page_settings' ),
-            'dashicons-admin-links'
+			array( &$this, 'page_options' ),
+            'data:image/svg+xml;base64,CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmlld0JveD0iMCAwIDMyIDMyIj4KPHBhdGggZD0iTTE4LjcwNiAyNy41ODVhNS4yNjEgNS4yNjEgMCAwIDEtMy43MjMtOC45ODNsMS40MTUgMS40MTRhMy4yNjQgMy4yNjQgMCAxIDAgNC42MTYgNC42MTZsNi4wMy02LjAzYTMuMjY0IDMuMjY0IDAgMCAwLTQuNjE2LTQuNjE2bC0xLjQxNC0xLjQxNGE1LjI2NCA1LjI2NCAwIDAgMSA3LjQ0NCA3LjQ0NGwtNi4wMyA2LjAzYTUuMjQ2IDUuMjQ2IDAgMCAxLTMuNzIyIDEuNTM5eiIgZmlsbD0iY3VycmVudENvbG9yIj48L3BhdGg+CjxwYXRoIGQ9Ik0xMC4yNjQgMjkuOTk3YTUuMjYyIDUuMjYyIDAgMCAxLTMuNzIyLTguOTgzbDYuMDMtNi4wM2E1LjI2NCA1LjI2NCAwIDEgMSA3LjQ0NCA3LjQ0M2wtMS40MTQtMS40MTRhMy4yNjQgMy4yNjQgMCAxIDAtNC42MTYtNC42MTVsLTYuMDMgNi4wM2EzLjI2NCAzLjI2NCAwIDAgMCA0LjYxNiA0LjYxNmwxLjQxNCAxLjQxNGE1LjI0NSA1LjI0NSAwIDAgMS0zLjcyMiAxLjU0eiIgZmlsbD0iY3VycmVudENvbG9yIj48L3BhdGg+CjxwYXRoIGQ9Ik0yIDEwaDh2MkgyeiIgZmlsbD0iY3VycmVudENvbG9yIj48L3BhdGg+CjxwYXRoIGQ9Ik0yIDZoMTJ2MkgyeiIgZmlsbD0iY3VycmVudENvbG9yIj48L3BhdGg+CjxwYXRoIGQ9Ik0yIDJoMTJ2MkgyeiIgZmlsbD0iY3VycmVudENvbG9yIj48L3BhdGg+Cjwvc3ZnPgo='
 		);
 
         add_submenu_page(
             'automatic-internal-links-for-seo',
-            'Activity Logs',
-            'Activity Logs',
+            'Settings',  // Page title
+            'Settings',  // This shows in submenu instead of "Auto Links"
             'manage_options',
-            'automatic-internal-links-logs',
-			array( &$this, 'page_logs' )
+            'automatic-internal-links-for-seo',  // Same as parent slug
+            array(&$this, 'page_options')
+        );
+
+        add_submenu_page(
+            'automatic-internal-links-for-seo',
+            'Sync Posts & Pages',
+            'Sync Pages',
+            'manage_options',
+            'automatic-internal-links-for-seo#/sync',  // Changed to new options page with hash
+            array( &$this, 'page_new_options' )  // Use the same callback as your main options page
         );
 
         add_submenu_page(
             'automatic-internal-links-for-seo',
             'Manual Internal & External Links',
-            'Manual Internal Links',
+            'Manual Links',
             'manage_options',
-            'automatic-internal-links-manual',
-			array( &$this, 'page_manual_links' )
+            'automatic-internal-links-for-seo#/manual-links',  // Changed to new options page with hash
+            array( &$this, 'page_new_options' )  // Use the same callback as your main options page
         );
-    }
 
-    public function add_settings()
-    {
-        add_menu_page (
-			'Automatic Internal Links for SEO',
-            'Auto Links for SEO',
-            'manage_options',
+        add_submenu_page(
             'automatic-internal-links-for-seo',
-			array( &$this, 'page' ),
-            'dashicons-admin-links'
-		);
+            'Activity Logs',
+            'Activity Logs',
+            'manage_options',
+            'automatic-internal-links-for-seo#/activity-log',  // Changed to new options page with hash
+            array( &$this, 'page_new_options' )  // Use the same callback as your main options page
+        );
+
     }
 
-    public function page_settings() {
+    /**
+     * The main entry point for the Auto Links admin page.
+     * This function is responsible for rendering the page, including
+     * setting up the necessary JavaScript variables, and enqueueing
+     * the necessary scripts and styles.
+     *
+     * @return void
+     */
+    public function page_options()
+    {
 
-        $safe = [ "apply_pages", "apply_posts", "apply_products", "disable_autolinks", "remove_settings", "remove_links", "settings", "help", "enable_override", "new_tab", "nofollow", "partial_match", "case_sensitive", "bold" ];
+        $database = new DBController();
+        $system_status = $database->check_system_status();  
 
-        $updated = "";
+        // Get list of post types to display as checkbox options
+        $post_types = $this->cpts( ['attachment'] );
+        $get_options = new Option;
+        $options = $get_options::all();
+        $blacklist = $this->blacklist();
+        $options['blacklist'] = $blacklist;
 
-        if ( isset( $_POST['update'] ) ) {
-
-            $updated = $this->update_settings($safe);
-
+        if (isset($options['post_types']) && !empty($options['post_types'])) {
+            $options['post_types'] = maybe_unserialize($options['post_types']);
         }
-
-        $deleting = "";
-
-        if ( isset( $_POST['clear_transients'] ) ) {
-
-            if ( function_exists( 'current_user_can' ) && !current_user_can( 'manage_options' ) )
-            {    
-                die( 'Sorry, not allowed...' );
-            }
-
-            check_admin_referer( 'automatic-internal-links-settings', 'ails__nonce' );
-
-            if ( ! isset( $_POST['ails__nonce'] ) || ! wp_verify_nonce( $_POST['ails__nonce'], 'automatic-internal-links-settings' )
-            ) {
-                die( 'Sorry, not allowed. Nonce doesn\'t verify' );
-            }
-
-            $deleting = $this->delete_all_transients();
-
-        }
-
-        $options = new Option;
 
         $post_types = $this->cpts( ['attachment'] );
 
-        $blacklist = $this->blacklist_urls();
+        // Get blacklisted post IDs
+        $blacklisted_posts = isset($options['blacklist']) ? (array)$options['blacklist'] : [];
+        
+        // Format blacklisted posts with titles
+        $formatted_blacklist = array_map(function($post_id) {
+            return [
+                'id' => $post_id,
+                'title' => get_the_title($post_id)
+            ];
+        }, $blacklisted_posts);
 
-        $nonce = wp_create_nonce( 'crud_link' );
+        // Get sync status including auto-sync information
+        $auto_sync_status = $this->get_auto_sync_status();
 
-        $total_items_require_sync = $this->get_total_pages_and_items();
-        $total_items_in_logs = $this->get_count_from_logs_table();
-        $memory_notification = $this->check_memory_limit();
-
-        wp_localize_script( 'ails__script', 'data', array(
-            'total_pages_and_items' => $total_items_require_sync,
+        wp_localize_script( 'autolinks__main', 'data', array(
+            'post_types' => $post_types,
+            'blacklistedPosts' => $formatted_blacklist,
+            'total_items_require_sync' => $this->get_total_pages_and_items(),
+            'auto_sync_status' => $auto_sync_status,
             'batch_size' => $this->batch_size,
+            'options' => Option::normalize_option_types($options),
             'syncDate' => get_option( "autolinks_sync" ),
-            'nonce' => $nonce,
+            'pro' => ails__fs()->can_use_premium_code__premium_only(),
+            'plugins' => $this->installable_plugins(),
+            'language' => get_locale(),
+            'nonce' => wp_create_nonce( 'ails__nonce' ),
+            'purchase_url' => ails__fs()->get_upgrade_url(),
+            'memory_limit' => $this->check_memory_limit(),
+            'onboarding_status' => $this->get_onboarding_status(),
+            'system_status' => $system_status
         ));
 
-        // var_dump( $options->all() );
-        
-        $active_tab = ( isset( $_GET['tab'] ) && in_array( $_GET['tab'], $safe ) ? sanitize_key($_GET['tab']) : 'settings' );
-
-        if( $active_tab == 'settings' ) {
-            return Plugin::view('settings', compact('options', 'total_items_require_sync', 'total_items_in_logs', 'memory_notification', 'post_types', 'blacklist', 'updated', 'deleting'));
+        if ($system_status['tables_recreated']) {
+            add_action('admin_notices', function() use ($system_status) {
+                ?>
+                <div class="notice notice-success is-dismissible">
+                    <p><?php echo esc_html($system_status['message']); ?></p>
+                </div>
+                <?php
+            });
+        } elseif (!$system_status['success']) {
+            add_action('admin_notices', function() use ($system_status) {
+                ?>
+                <div class="notice notice-error">
+                    <p><?php echo esc_html($system_status['message']); ?></p>
+                </div>
+                <?php
+            });
         }
 
-        if( $active_tab == 'help' ) {
-            return Plugin::view('help');
+        if (AILS_PLUGIN_MODE !== "prod") {
+            echo $this->devNotification();
         }
 
-    }
-
-    public function page_logs() {
-
-        global $wpdb;
-
-        // Send options data to app.js
-        $items = $wpdb->get_results("SELECT * FROM $this->table_log WHERE COALESCE(Keyword, '') != '' ORDER BY updated_at DESC", OBJECT);
-
-        $nonce = wp_create_nonce( 'crud_link' );
-        
-        $settings = new SettingsController;
-
-        wp_localize_script( 'ails__script', 'data', array(
-            'items' => $items,
-            'total_pages_and_items' => $settings->get_total_pages_and_items(),
-            'nonce' => $nonce,
-        ));
-        
-        return Plugin::view('log', compact('items'));
-    
-    }
-
-    public function page_manual_links() {
-
-        global $wpdb;
-
-        // Send options data to app.js
-        $items = $wpdb->get_results("SELECT * FROM $this->table WHERE COALESCE(Keyword, '') != '' ORDER BY created_at DESC", OBJECT);
-        
-        // $options_data = Option::all();
-        $nonce = wp_create_nonce( 'crud_link' );
-
-        $links = new LinksController;
-
-        // Get Posts Titles and URL's
-        $allowed_post_types = Option::check('post_types') ? Option::get('post_types') : [];
-        $pages = $links->get_items( get_posts(array(
-            'post_type' => $allowed_post_types,
-            'orderby'   => 'title',
-            'order'   => 'ASC',
-            'fields' => 'ids',
-            'numberposts' => -1
-        )), false, true);
-
-        $per_page = Option::check('per_page') ? intval(Option::get('per_page')) : 10;
-
-        // var_dump($pages);
-        
-        wp_localize_script( 'ails__script', 'data', array(
-            'items' => $items,
-            'all_pages' => $pages,
-            'per_page' => $per_page,
-            'nonce' => $nonce,
-        ));
-        
-        return Plugin::view('links');
-    
+        echo '<div id="autolinks__app"></div>';
     }
 }

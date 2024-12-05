@@ -8,4 +8,9 @@ $baseDir = dirname($vendorDir);
 return array(
     'html_changer\\testing\\' => array($vendorDir . '/friedolinfoerder/html-changer/spec'),
     'html_changer\\' => array($vendorDir . '/friedolinfoerder/html-changer/src'),
+    'Pagup\\AutoLinks\\Traits\\' => array($baseDir . '/admin/traits'),
+    'Pagup\\AutoLinks\\Core\\' => array($baseDir . '/admin/core'),
+    'Pagup\\AutoLinks\\Controllers\\' => array($baseDir . '/admin/controllers'),
+    'Pagup\\AutoLinks\\Bootstrap\\' => array($baseDir . '/bootstrap'),
+    'Pagup\\AutoLinks\\' => array($baseDir . '/admin'),
 );
