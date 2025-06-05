@@ -9,6 +9,7 @@ use WP_Post;
 class MetaboxController extends SettingsController {
     private string $table_log;
     private const META_KEY = 'disable_ails';
+    private const INTERNAL_LINKS_META_KEY = 'disable_internal_links';
     private const METABOX_ID = 'ails_post_options';
 
     public function __construct() {
@@ -46,7 +47,8 @@ class MetaboxController extends SettingsController {
         }
 
         $data = [
-            self::META_KEY => get_post_meta($post->ID, self::META_KEY, true)
+            self::META_KEY => get_post_meta($post->ID, self::META_KEY, true),
+            self::INTERNAL_LINKS_META_KEY => get_post_meta($post->ID, self::INTERNAL_LINKS_META_KEY, true)
         ];
 
         Plugin::view('metabox', $data);
@@ -60,12 +62,20 @@ class MetaboxController extends SettingsController {
             return false;
         }
 
-        $safe = [self::META_KEY];
+        $safe = [self::META_KEY, self::INTERNAL_LINKS_META_KEY];
         
+        // Handle disable_ails
         if (Request::safe(self::META_KEY, $safe)) {
             update_post_meta($post_id, self::META_KEY, true);
         } else {
             delete_post_meta($post_id, self::META_KEY);
+        }
+
+        // Handle disable_internal_links
+        if (Request::safe(self::INTERNAL_LINKS_META_KEY, $safe)) {
+            update_post_meta($post_id, self::INTERNAL_LINKS_META_KEY, true);
+        } else {
+            delete_post_meta($post_id, self::INTERNAL_LINKS_META_KEY);
         }
 
         return true;

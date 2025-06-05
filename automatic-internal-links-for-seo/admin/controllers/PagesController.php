@@ -111,7 +111,8 @@ class PagesController extends SettingsController
         wp_localize_script( 'autolinks__main', 'data', array(
             'post_types' => $post_types,
             'blacklistedPosts' => $formatted_blacklist,
-            'total_items_require_sync' => $this->get_total_pages_and_items(),
+            'total_items_require_sync' => $this->get_cached_sync_totals(),
+            'sync_badges_disabled' => Option::check('disable_sync_badges') && Option::get('disable_sync_badges'),
             'auto_sync_status' => $auto_sync_status,
             'batch_size' => $this->batch_size,
             'options' => Option::normalize_option_types($options),
@@ -148,6 +149,31 @@ class PagesController extends SettingsController
             echo $this->devNotification();
         }
 
+        // $cached_data = get_transient('ails_sync_totals');
+        // var_dump($cached_data ? 'SYNC REQ VALUE FROM CACHE' : 'SYNC REQ VALUE FROM DATABASE');
+
         echo '<div id="autolinks__app"></div>';
+    }
+
+    private function get_cached_sync_totals(): array {
+        $cache_key = 'ails_sync_totals';
+        $cached_data = get_transient($cache_key);
+        
+        if ($cached_data !== false) {
+            return $cached_data;
+        }
+        
+        // Cache miss - get fresh data
+        $data = $this->get_total_pages_and_items();
+        
+        // Cache for 24 hours
+        set_transient($cache_key, $data, 24 * HOUR_IN_SECONDS);
+        
+        return $data;
+    }
+
+    // Add cache clearing method to PagesController:
+    public function clear_sync_cache(): void {
+        delete_transient('ails_sync_totals');
     }
 }

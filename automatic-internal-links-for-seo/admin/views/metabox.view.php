@@ -63,15 +63,32 @@ input:checked + .ails-toggle-slider:before {
     margin-right: 3px;
 }
 </style>
-<div class="misc-pub-section misc-pub-section-last ails-container"><span id="timestamp">
+<div class="misc-pub-section misc-pub-section-last ails-container">
+    <div class="mb-3">
+        <label class="ails-label">Disable Links To This Page</label>
+        <div>
+            <label class="ails-toggle">
+                <input type="checkbox" name="disable_ails" value="disable_ails" <?php 
+                    if ( isset($disable_ails) && !empty($disable_ails) ) { echo 'checked'; }
+                ?> />
+                <span class='ails-toggle-slider ails-toggle-round'></span>
+            </label>
+        </div>
+        <p><?php echo __('Checking this box will prevent other pages from linking to this page.', 'automatic-internal-links-for-seo'); ?></p>
+    </div>
 
-    <label class="ails-label">Disable Auto Internal Links</label>
-    <label class="ails-toggle"><input type="checkbox" name="disable_ails" value="disable_ails" <?php 
-        if ( isset($disable_ails) && !empty($disable_ails) ) { echo  'checked' ;  }
-    ?> /> /><span class='ails-toggle-slider ails-toggle-round'></span></label>
-
-    <p><?php echo __('Checking this box will disable auto internal links for this page. Yoast Focus keyword will not be used to create auto internal links', 'automatic-internal-links-for-seo'); ?></p>
-
+    <div class="mt-3">
+        <label class="ails-label">Disable Internal Links On This Page</label>
+        <div>
+            <label class="ails-toggle">
+                <input type="checkbox" name="disable_internal_links" value="disable_internal_links" <?php 
+                    if ( isset($disable_internal_links) && !empty($disable_internal_links) ) { echo 'checked'; }
+                ?> />
+                <span class='ails-toggle-slider ails-toggle-round'></span>
+            </label>
+        </div>
+        <p><?php echo __('Checking this box will prevent auto-linking of keywords on this page.', 'automatic-internal-links-for-seo'); ?></p>
+    </div>
 </div>
 <?php 
 $disable_autolinks = \Pagup\AutoLinks\Core\Option::get('disable_autolinks');

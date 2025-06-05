@@ -12,6 +12,7 @@ use Pagup\AutoLinks\Controllers\{
     CronController
 };
 use Pagup\AutoLinks\Core\Asset;
+use Pagup\AutoLinks\Core\Option;
 use Pagup\AutoLinks\Traits\ErrorHandler;
 class Settings {
     use ErrorHandler;
@@ -82,6 +83,8 @@ class Settings {
             10,
             2
         );
+        // ⭐ CACHE INVALIDATION HOOKS
+        $this->registerCacheInvalidationHooks();
     }
 
     /**
@@ -111,6 +114,44 @@ class Settings {
         } );
         // Cron Testing
         $this->addAjaxAction( 'ails_test_cron', [$this->cronController, 'test_trigger'] );
+    }
+
+    /**
+     * Register hooks to clear badge cache when needed
+     */
+    private function registerCacheInvalidationHooks() : void {
+        // Post operations
+        add_action( 'save_post', [$this, 'clear_badge_cache'] );
+        add_action( 'delete_post', [$this, 'clear_badge_cache'] );
+        add_action( 'wp_trash_post', [$this, 'clear_badge_cache'] );
+        add_action( 'untrash_post', [$this, 'clear_badge_cache'] );
+        add_action( 'transition_post_status', [$this, 'clear_badge_cache'] );
+        // SEO meta updates (for AJAX updates that don't trigger save_post)
+        add_action(
+            'updated_post_meta',
+            [$this, 'handle_seo_meta_update'],
+            10,
+            4
+        );
+        add_action(
+            'added_post_meta',
+            [$this, 'handle_seo_meta_update'],
+            10,
+            4
+        );
+        add_action(
+            'deleted_post_meta',
+            [$this, 'handle_seo_meta_update'],
+            10,
+            4
+        );
+        // Plugin operations
+        add_action( 'update_option_' . self::PLUGIN_PAGE, [$this, 'clear_badge_cache'] );
+        add_action( 'wp_ajax_ails_sync_date', [$this, 'clear_badge_cache'], 5 );
+        // AIOSEO special case
+        if ( function_exists( 'aioseo' ) ) {
+            add_action( 'aioseo_post_saved', [$this, 'clear_badge_cache'] );
+        }
     }
 
     /**
@@ -252,24 +293,44 @@ class Settings {
      * Add custom badge to menu item
      */
     public function add_custom_menu_badge() : void {
-        global $menu, $wpdb;
-        // Check if the required tables exist first
-        $log_table = AILS_LOG_TABLE;
-        $table_exists = $wpdb->get_var( "SHOW TABLES LIKE '{$log_table}'" ) === $log_table;
-        // Only proceed if table exists
-        if ( $table_exists ) {
-            $total_items = $this->settingsController->get_total_pages_and_items()["items"];
-            $display_number = $this->get_display_number( $total_items );
-            if ( !$display_number ) {
-                return;
-            }
-            foreach ( $menu as $key => $item ) {
-                if ( $item[2] === self::PLUGIN_PAGE ) {
-                    $menu[$key][0] .= sprintf( ' <span class="update-plugins count-1"><span class="plugin-count">%s</span></span>', esc_html( $display_number ) );
-                    break;
-                }
+        // CHECK IF BADGE IS DISABLED
+        if ( Option::check( 'disable_menu_badge' ) && Option::get( 'disable_menu_badge' ) ) {
+            return;
+            // Exit early - no menu badge, no queries
+        }
+        global $menu;
+        $total_items = $this->get_cached_badge_count();
+        $display_number = $this->get_display_number( $total_items );
+        if ( !$display_number ) {
+            return;
+        }
+        foreach ( $menu as $key => $item ) {
+            if ( $item[2] === self::PLUGIN_PAGE ) {
+                $menu[$key][0] .= sprintf( ' <span class="update-plugins count-1"><span class="plugin-count">%s</span></span>', esc_html( $display_number ) );
+                break;
             }
         }
+    }
+
+    /**
+     * Get badge count with caching
+     */
+    private function get_cached_badge_count() : int {
+        $cache_key = 'ails_badge_count';
+        $cached_count = get_transient( $cache_key );
+        if ( $cached_count !== false ) {
+            return (int) $cached_count;
+        }
+        global $wpdb;
+        $log_table = AILS_LOG_TABLE;
+        $table_exists = $wpdb->get_var( "SHOW TABLES LIKE '{$log_table}'" ) === $log_table;
+        if ( !$table_exists ) {
+            set_transient( $cache_key, 0, HOUR_IN_SECONDS );
+            return 0;
+        }
+        $total_items = $this->settingsController->get_total_pages_and_items()['items'];
+        set_transient( $cache_key, $total_items, 6 * HOUR_IN_SECONDS );
+        return $total_items;
     }
 
     /**
@@ -283,6 +344,38 @@ class Settings {
             return (string) $total_items;
         }
         return false;
+    }
+
+    /**
+     * Clear the badge count cache
+     */
+    public function clear_badge_cache() : void {
+        delete_transient( 'ails_badge_count' );
+        delete_transient( 'ails_sync_totals' );
+        // Also clear settings page cache
+    }
+
+    /**
+     * Handle SEO meta updates that might not trigger save_post
+     */
+    public function handle_seo_meta_update(
+        $meta_id,
+        $post_id,
+        $meta_key,
+        $meta_value
+    ) : void {
+        $seo_meta_keys = [
+            '_yoast_wpseo_focuskw',
+            // Yoast
+            'rank_math_focus_keyword',
+            // RankMath
+            'disable_ails',
+            // Plugin's own meta
+            'disable_internal_links',
+        ];
+        if ( in_array( $meta_key, $seo_meta_keys ) ) {
+            $this->clear_badge_cache();
+        }
     }
 
 }

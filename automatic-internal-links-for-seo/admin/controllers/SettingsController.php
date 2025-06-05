@@ -262,6 +262,9 @@ class SettingsController
             WHERE `option_name` LIKE '%\_transient\_%' 
             AND `option_name` LIKE '%ailsitem%'
         ");
+
+        delete_transient('ails_badge_count');
+        delete_transient('ails_sync_totals');
     
         if (empty($transients)) {
             if ($send_json) {
@@ -435,7 +438,7 @@ class SettingsController
      */
     public function get_auto_sync_status(): array {
         $is_scheduled = wp_next_scheduled('ails_auto_sync_event');
-        $total_items = $this->get_total_pages_and_items()['items'];
+        $total_items = $this->get_cached_sync_totals()['items'];
         $current_offset = (int)get_option('ails_auto_sync_offset', 0);
         $is_running = (bool)get_transient('ails_auto_sync_lock');
 
@@ -678,6 +681,26 @@ class SettingsController
     {
         $post_type_obj = get_post_type_object( get_post_type($post_id) );
         return $post_type_obj->labels->singular_name;
+    }
+
+    /**
+     * Get cached sync totals
+     */
+    private function get_cached_sync_totals(): array {
+        $cache_key = 'ails_sync_totals';
+        $cached_data = get_transient($cache_key);
+        
+        if ($cached_data !== false) {
+            return $cached_data;
+        }
+        
+        // Cache miss - get fresh data
+        $data = $this->get_total_pages_and_items();
+        
+        // Cache for 24 hours
+        set_transient($cache_key, $data, 24 * HOUR_IN_SECONDS);
+        
+        return $data;
     }
 
 }

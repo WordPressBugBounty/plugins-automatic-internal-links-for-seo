@@ -32,6 +32,13 @@ trait SettingHelper
         } else {
             $sanitized['post_types'] = maybe_serialize( ['post', 'page'] );
         }
+        // ADD MENU BADGE DISABLE OPTION
+        if ( isset( $options['disable_menu_badge'] ) ) {
+            $sanitized['disable_menu_badge'] = filter_var( $options['disable_menu_badge'], FILTER_VALIDATE_BOOLEAN );
+        } else {
+            $sanitized['disable_menu_badge'] = false;
+            // Default: menu badge enabled
+        }
         // Process non-pro options
         foreach ( $options as $key => $value ) {
             // Skip already processed keys
@@ -60,9 +67,10 @@ trait SettingHelper
         }
         // Set defaults based on pro status
         $defaults = [
-            'exclude_tags'     => '',
-            'exclude_keywords' => '',
-            'blacklist'        => maybe_serialize( [] ),
+            'exclude_tags'        => '',
+            'exclude_keywords'    => '',
+            'blacklist'           => maybe_serialize( [] ),
+            'disable_sync_badges' => false,
         ];
         foreach ( $defaults as $key => $value ) {
             if ( !isset( $sanitized[$key] ) ) {

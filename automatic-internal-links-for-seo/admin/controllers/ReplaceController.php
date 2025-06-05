@@ -59,6 +59,11 @@ class ReplaceController
 
         $post_id = get_the_ID();
 
+        // Check if internal links are disabled for this specific page
+        if (!empty($post_id) && get_post_meta($post_id, 'disable_internal_links', true)) {
+            return $content;
+        }
+
         $expiration_days = Option::check('expiration') ? Option::get('expiration') : 14;
 
         $this->items = $this->get_items($post_id, $content, $expiration_days);

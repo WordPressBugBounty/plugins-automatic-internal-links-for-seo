@@ -183,7 +183,8 @@ class Option {
             'nofollow' => false,
             'partial_match' => false,
             'bold' => false,
-            'case_sensitive' => false
+            'case_sensitive' => false,
+            'disable_menu_badge' => false
         ];
     
         // Set default values for boolean fields if they don't exist

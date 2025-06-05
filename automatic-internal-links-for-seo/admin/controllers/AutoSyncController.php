@@ -86,6 +86,10 @@ class AutoSyncController extends SettingsController {
             // Update offset
             $new_offset = $offset + $batch_size;
             update_option( 'ails_auto_sync_offset', $new_offset );
+            // UPDATE CACHE ARITHMETICALLY INSTEAD OF CLEARING
+            if ( $processed > 0 ) {
+                $this->update_sync_cache_count( $processed );
+            }
             // Schedule next run if needed
             if ( !wp_next_scheduled( $this->hook_name ) ) {
                 wp_schedule_event( time(), 'fifteen_minutes', $this->hook_name );
@@ -164,55 +168,6 @@ class AutoSyncController extends SettingsController {
     }
 
     /**
-     * Get the current status of the auto-sync feature.
-     *
-     * Provides information on whether the feature is enabled, scheduled, or running.
-     * Also returns the total number of items that need to be synced, the number of
-     * items processed so far, the number of items remaining to be synced, the
-     * next scheduled sync time, the last sync time, and the percentage of completion.
-     *
-     * @return array {
-     *     @type bool $is_enabled Is auto sync enabled?
-     *     @type bool $is_scheduled Is auto sync scheduled?
-     *     @type bool $is_running Is auto sync currently running?
-     *     @type int $total_items Total items available for syncing
-     *     @type int $items_processed Number of items processed so far
-     *     @type int $items_remaining Number of items remaining to be synced
-     *     @type string|null $next_run Scheduled time for next auto sync run
-     *     @type string|null $last_run Time of last auto sync run
-     *     @type int $progress_percentage Progress percentage of auto sync
-     *     @type int $batch_size Number of items processed in each batch
-     *     @type int $estimated_completion_batches Estimated number of batches until completion
-     *     @type string $sync_frequency The frequency of auto sync
-     * }
-     * @since 2.0.0
-     */
-    public function get_sync_status() : array {
-        // Get actual count of items needing sync from SettingsController method
-        $sync_data = $this->get_total_pages_and_items();
-        $items_requiring_sync = $sync_data['items'];
-        $batch_size = $this->get_batch_size();
-        $next_run = wp_next_scheduled( $this->hook_name );
-        $last_run = get_option( 'autolinks_sync' );
-        // Get current offset
-        $current_offset = (int) get_option( 'ails_auto_sync_offset', 0 );
-        return [
-            'is_enabled'                   => Option::check( 'auto_sync' ) && Option::get( 'auto_sync' ),
-            'is_scheduled'                 => (bool) $next_run,
-            'is_running'                   => (bool) get_transient( 'ails_auto_sync_lock' ),
-            'total_items'                  => $items_requiring_sync,
-            'items_processed'              => 0,
-            'items_remaining'              => $items_requiring_sync,
-            'next_run'                     => ( $next_run ? wp_date( 'Y-m-d H:i:s', $next_run ) : null ),
-            'last_run'                     => $last_run,
-            'progress_percentage'          => 0,
-            'batch_size'                   => $batch_size,
-            'estimated_completion_batches' => ceil( $items_requiring_sync / $batch_size ),
-            'sync_frequency'               => Option::get( 'auto_sync_frequency' ) ?? 'fifteen_minutes',
-        ];
-    }
-
-    /**
      * Prepare post data for auto-syncing.
      *
      * @param int $post_id Post ID to prepare data for
@@ -268,6 +223,28 @@ class AutoSyncController extends SettingsController {
             return get_post_meta( $post_id, $focus_keyword_type, true );
         }
         return '';
+    }
+
+    /**
+     * Update cached sync counts by subtracting processed items
+     */
+    private function update_sync_cache_count( int $processed_count ) : void {
+        // Update badge cache
+        $badge_cache = get_transient( 'ails_badge_count' );
+        if ( $badge_cache !== false ) {
+            $new_count = max( 0, (int) $badge_cache - $processed_count );
+            set_transient( 'ails_badge_count', $new_count, 24 * HOUR_IN_SECONDS );
+        }
+        // Update sync totals cache
+        $sync_cache = get_transient( 'ails_sync_totals' );
+        if ( $sync_cache !== false && is_array( $sync_cache ) ) {
+            $sync_cache['items'] = max( 0, $sync_cache['items'] - $processed_count );
+            // Recalculate pages
+            $batch_size = $this->get_batch_size();
+            $sync_cache['pages'] = ceil( $sync_cache['items'] / $batch_size );
+            set_transient( 'ails_sync_totals', $sync_cache, 24 * HOUR_IN_SECONDS );
+        }
+        $this->log( "Updated cache: subtracted {$processed_count} synced items", 'info' );
     }
 
 }

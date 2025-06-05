@@ -4,7 +4,7 @@ Tags: Automatic linking, Internal links, Link building, SEO, User experience
 Requires at least: 4.1
 Requires PHP: 7.4
 Tested up to: 6.8
-Stable tag: 2.0.1
+Stable tag: 2.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -255,3 +255,16 @@ YES. This plugin was made to avoid this type of issue.
 * 🐛 FIX: Various UI/UX inconsistencies from previous versions
 * 👌 IMPROVE: Updated Freemius to v2.9.0
 * 🚨 NOTE: Major update with significant improvements in stability and performance
+
+= 2.0.1 =
+* 🐛 FIX: Freemius SDK Security fix
+
+= 2.0.2 =
+* 👌 IMPROVE: Disable Internal Links on Individual Pages via Metabox.
+
+= 2.0.3 =
+* 🚀 MAJOR: Eliminated heavy db queries. Wp-admin pages load significantly faster
+* 🎯 NEW: Smart caching system for page loads
+* 🎯 NEW: Added checkbox on Settings page to hide admin menu badge for required sync items if experiencing slow admin pages.
+* ✅ FIX: Menu badge numbers update correctly when deleting activity logs or syncing via cron job
+* 👌 IMPROVE: Updated Freemius to v2.12.0

@@ -357,13 +357,17 @@ class LinksController extends SettingsController
             );
             return;
         }
+        
+        // Clear badge/sync cache
+        delete_transient('ails_badge_count');
+        delete_transient('ails_sync_totals');
+     
+        // Delete cache items
+        $this->delete_all_transients();
      
         wp_send_json_success([
             'message' => $item->title . " has been deleted",
         ]);
-     
-        // Delete cache items
-        $this->delete_all_transients();
     }
 
     /**
@@ -418,6 +422,13 @@ class LinksController extends SettingsController
             );
             return;
         }
+
+        // Clear badge/sync cache
+        delete_transient('ails_badge_count');
+        delete_transient('ails_sync_totals');
+
+        // Delete cache items
+        $this->delete_all_transients();
 
         wp_send_json_success([
             'message' => count($ids) . ' items have been deleted',
