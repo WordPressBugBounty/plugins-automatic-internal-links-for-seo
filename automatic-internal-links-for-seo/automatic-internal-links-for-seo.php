@@ -1,10 +1,10 @@
 <?php
 
 /*
-* Plugin Name: Automatic Internal Links for SEO
+* Plugin Name: Automatic Internal Links for SEO by Pagup
 * Description: This fully automated plugin creates and boosts your internal linking in 2 clicks, using Yoast / Rank Math Focus keywords as anchor text for internal link building.
 * Author: Pagup
-* Version: 2.0.3
+* Version: 2.0.4
 * Author URI: https://pagup.com/
 * Text Domain: automatic-internal-links-for-seo
 * Domain Path: /languages/
@@ -26,24 +26,25 @@ if ( function_exists( 'ails__fs' ) ) {
             if ( !isset( $ails__fs ) ) {
                 require_once AILS_PLUGIN_ROOT . 'vendor/freemius/start.php';
                 $ails__fs = fs_dynamic_init( [
-                    'id'              => '8985',
-                    'slug'            => 'automatic-internal-links-for-seo',
-                    'type'            => 'plugin',
-                    'public_key'      => 'pk_4ab073489df5c689f54a07bfd51d6',
-                    'is_premium'      => false,
-                    'premium_suffix'  => 'Pro',
-                    'has_addons'      => false,
-                    'has_paid_plans'  => true,
-                    'trial'           => [
+                    'id'               => '8985',
+                    'slug'             => 'automatic-internal-links-for-seo',
+                    'type'             => 'plugin',
+                    'public_key'       => 'pk_4ab073489df5c689f54a07bfd51d6',
+                    'is_premium'       => false,
+                    'premium_suffix'   => 'Pro',
+                    'has_addons'       => false,
+                    'has_paid_plans'   => true,
+                    'is_org_compliant' => true,
+                    'trial'            => [
                         'days'               => 7,
                         'is_require_payment' => true,
                     ],
-                    'has_affiliation' => 'all',
-                    'menu'            => [
+                    'has_affiliation'  => 'all',
+                    'menu'             => [
                         'slug'    => 'automatic-internal-links-for-seo',
                         'support' => false,
                     ],
-                    'is_live'         => true,
+                    'is_live'          => true,
                 ] );
             }
             return $ails__fs;

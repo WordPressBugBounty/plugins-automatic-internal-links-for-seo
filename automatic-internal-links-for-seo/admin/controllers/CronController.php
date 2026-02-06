@@ -12,22 +12,22 @@ class CronController {
         $custom_schedules = [
             'fifteen_minutes' => [
                 'interval' => 15 * MINUTE_IN_SECONDS,
-                'display' => __('Every 15 Minutes')
+                'display' => __('Every 15 Minutes', 'automatic-internal-links-for-seo')
             ],
             'thirty_minutes' => [
                 'interval' => 30 * MINUTE_IN_SECONDS,
-                'display' => __('Every 30 Minutes')
+                'display' => __('Every 30 Minutes', 'automatic-internal-links-for-seo')
             ],
             'two_hours' => [
                 'interval' => 2 * HOUR_IN_SECONDS,
-                'display' => __('Every Two Hours')
+                'display' => __('Every Two Hours', 'automatic-internal-links-for-seo')
             ],
             'six_hours' => [
                 'interval' => 6 * HOUR_IN_SECONDS,
-                'display' => __('Every Six Hours')
+                'display' => __('Every Six Hours', 'automatic-internal-links-for-seo')
             ]
         ];
-        
+
         return array_merge($schedules, $custom_schedules);
     }
 
@@ -51,9 +51,14 @@ class CronController {
      */
     public function test_trigger(): void {
         try {
-            if (!wp_verify_nonce($_POST['nonce'] ?? '', 'ails__nonce')) {
-                wp_send_json_error(['message' => 'Invalid nonce'], 419 );
-                return;
+            if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'ails__nonce')) {
+                wp_send_json_error(['message' => 'Invalid nonce'], 419);
+                wp_die();
+            }
+
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error(['message' => 'Unauthorized user'], 403);
+                wp_die();
             }
     
             $before_status = $this->get_status();

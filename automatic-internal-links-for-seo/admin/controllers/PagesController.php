@@ -108,7 +108,7 @@ class PagesController extends SettingsController
         // Get sync status including auto-sync information
         $auto_sync_status = $this->get_auto_sync_status();
 
-        wp_localize_script( 'autolinks__main', 'data', array(
+        wp_localize_script( 'autolinks__main', 'ails_admin_data', array(
             'post_types' => $post_types,
             'blacklistedPosts' => $formatted_blacklist,
             'total_items_require_sync' => $this->get_cached_sync_totals(),
@@ -116,11 +116,11 @@ class PagesController extends SettingsController
             'auto_sync_status' => $auto_sync_status,
             'batch_size' => $this->batch_size,
             'options' => Option::normalize_option_types($options),
-            'syncDate' => get_option( "autolinks_sync" ),
+            'syncDate' => get_option("autolinks_sync"),
             'pro' => ails__fs()->can_use_premium_code__premium_only(),
             'plugins' => $this->installable_plugins(),
             'language' => get_locale(),
-            'nonce' => wp_create_nonce( 'ails__nonce' ),
+            'nonce' => wp_create_nonce('ails__nonce'),
             'purchase_url' => ails__fs()->get_upgrade_url(),
             'memory_limit' => $this->check_memory_limit(),
             'onboarding_status' => $this->get_onboarding_status(),
@@ -146,7 +146,7 @@ class PagesController extends SettingsController
         }
 
         if (AILS_PLUGIN_MODE !== "prod") {
-            echo $this->devNotification();
+            echo wp_kses_post($this->devNotification());
         }
 
         // $cached_data = get_transient('ails_sync_totals');

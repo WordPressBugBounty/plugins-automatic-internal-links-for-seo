@@ -206,7 +206,7 @@ trait SettingHelper
         }
         $types = [];
         foreach ( $post_types as $post_type ) {
-            $label = get_post_type_labels( $post_type );
+            $label = $post_type->labels;
             $types[$label->name] = $post_type->name;
         }
         return $types;

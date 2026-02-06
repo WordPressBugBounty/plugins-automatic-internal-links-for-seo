@@ -1,10 +1,10 @@
-=== Internal Linking for SEO traffic & Ranking - Auto internal links (100% automatic) ===
+=== Automatic Internal Links for SEO by Pagup ===
 Contributors: the-rock, pagup, freemius
 Tags: Automatic linking, Internal links, Link building, SEO, User experience
 Requires at least: 4.1
 Requires PHP: 7.4
-Tested up to: 6.8
-Stable tag: 2.0.3
+Tested up to: 6.9
+Stable tag: 2.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -268,3 +268,11 @@ YES. This plugin was made to avoid this type of issue.
 * 🎯 NEW: Added checkbox on Settings page to hide admin menu badge for required sync items if experiencing slow admin pages.
 * ✅ FIX: Menu badge numbers update correctly when deleting activity logs or syncing via cron job
 * 👌 IMPROVE: Updated Freemius to v2.12.0
+
+= 2.0.4 =
+  * 🔒 SECURITY: Enhanced input sanitization and output escaping to prevent XSS vulnerabilities
+  * 🔒 SECURITY: Improved nonce validation to prevent CSRF attacks
+  * 🐛 FIX: Resolved WordPress.org plugin directory compliance issues
+  * 🐛 FIX: Proper internationalization support with correct text domains
+  * 🐛 FIX: Updated localized JavaScript variable name for better consistency
+  * 📦 UPDATE: Upgraded Freemius SDK to v2.13.0

@@ -29,7 +29,7 @@ class MetaboxController extends SettingsController {
         foreach ($post_types as $post_type) {
             add_meta_box(
                 self::METABOX_ID,
-                __('Automatic Internal Links'),
+                __('Automatic Internal Links', 'automatic-internal-links-for-seo'),
                 [$this, 'metabox'],
                 $post_type,
                 'side',

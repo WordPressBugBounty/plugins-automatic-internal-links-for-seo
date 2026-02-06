@@ -74,7 +74,7 @@ input:checked + .ails-toggle-slider:before {
                 <span class='ails-toggle-slider ails-toggle-round'></span>
             </label>
         </div>
-        <p><?php echo __('Checking this box will prevent other pages from linking to this page.', 'automatic-internal-links-for-seo'); ?></p>
+        <p><?php echo esc_html__('Checking this box will prevent other pages from linking to this page.', 'automatic-internal-links-for-seo'); ?></p>
     </div>
 
     <div class="mt-3">
@@ -87,7 +87,7 @@ input:checked + .ails-toggle-slider:before {
                 <span class='ails-toggle-slider ails-toggle-round'></span>
             </label>
         </div>
-        <p><?php echo __('Checking this box will prevent auto-linking of keywords on this page.', 'automatic-internal-links-for-seo'); ?></p>
+        <p><?php echo esc_html__('Checking this box will prevent auto-linking of keywords on this page.', 'automatic-internal-links-for-seo'); ?></p>
     </div>
 </div>
 <?php 

@@ -42,8 +42,10 @@ class SettingsController
             wp_send_json_error( "Unauthorized user", 403 );
             wp_die();
         }
-  
-        $options = $this->sanitize_options($_POST['options']);
+
+        $options = $this->sanitize_options(
+            isset($_POST['options']) ? wp_unslash($_POST['options']) : []
+        );
 
         // Handle scheduling/unscheduling based on auto_sync setting
         $this->handle_auto_sync_settings($options);
@@ -188,8 +190,8 @@ class SettingsController
                 wp_send_json_error("Unauthorized user", 403);
                 wp_die();
             }
-    
-            $query = isset($_POST['query']) ? sanitize_text_field($_POST['query']) : '';
+
+            $query = isset($_POST['query']) ? sanitize_text_field(wp_unslash($_POST['query'])) : '';
             
             $allowed_post_types = Option::check('post_types') ? maybe_unserialize(Option::get('post_types')) : ['post', 'page'];
     
@@ -248,8 +250,22 @@ class SettingsController
      * @return string The result message.
      */
     public function delete_all_transients($send_json = false) {
-        if ($send_json && !check_ajax_referer('ails__nonce', 'nonce', false)) {
-            wp_send_json_error("Invalid nonce", 401);
+        // Validate nonce early if present in request to prevent security bypass
+        if (isset($_REQUEST['nonce'])) {
+            if (!check_ajax_referer('ails__nonce', 'nonce', false)) {
+                if ($send_json) {
+                    wp_send_json_error("Invalid nonce", 401);
+                }
+                wp_die();
+            }
+        }
+
+        // Validate permissions for AJAX requests
+        if ($send_json) {
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error("Unauthorized user", 403);
+                wp_die();
+            }
         }
     
         global $wpdb;
@@ -503,9 +519,15 @@ class SettingsController
     public function update_onboarding() {
         if (!check_ajax_referer('ails__nonce', 'nonce', false)) {
             wp_send_json_error("Invalid nonce", 401);
+            wp_die();
         }
-    
-        $tour_type = sanitize_text_field($_POST['tour_type']);
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error("Unauthorized user", 403);
+            wp_die();
+        }
+
+        $tour_type = isset($_POST['tour_type']) ? sanitize_text_field(wp_unslash($_POST['tour_type'])) : '';
         $valid_types = ['settings', 'sync', 'links', 'logs'];
     
         if (!in_array($tour_type, $valid_types)) {
@@ -515,17 +537,14 @@ class SettingsController
         // Get existing onboarding status or initialize new array
         $onboarding_status = get_option(self::ONBOARDING_OPTION, []);
         $onboarding_status[$tour_type] = true;
-        
-        $updated = update_option(self::ONBOARDING_OPTION, $onboarding_status);
-    
-        if ($updated) {
-            wp_send_json_success([
-                'message' => 'Tour status updated',
-                'tour_type' => $tour_type
-            ]);
-        } else {
-            wp_send_json_error(['message' => 'Failed to update tour status']);
-        }
+
+        // update_option returns false if value hasn't changed, which is not a failure
+        update_option(self::ONBOARDING_OPTION, $onboarding_status);
+
+        wp_send_json_success([
+            'message' => 'Tour status updated',
+            'tour_type' => $tour_type
+        ]);
     }
 
     /**

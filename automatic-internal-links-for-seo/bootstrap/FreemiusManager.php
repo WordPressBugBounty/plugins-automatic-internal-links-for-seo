@@ -70,9 +70,9 @@ class FreemiusManager {
     ): string {
         $break = "<br><br>";
         $morePlugins = $this->getMorePluginsHtml();
-        
+
         return sprintf(
-            esc_html__($this->messages['connect']['title'], 'automatic-internal-links-for-seo'),
+            esc_html__('Hey %1$s, %2$s Click on Allow & Continue to optimize your internal linking and boost your Ranking on search engines. You have no idea how much this plugin will simplify your life. %2$s Never miss an important update -- opt-in to our security and feature updates notifications. %2$s See you on the other side. %2$s Looking for more Wp plugins?', 'automatic-internal-links-for-seo'),
             $userFirstName,
             $break
         ) . $morePlugins;
