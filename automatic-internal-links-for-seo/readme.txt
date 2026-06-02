@@ -1,278 +1,290 @@
 === Automatic Internal Links for SEO by Pagup ===
 Contributors: the-rock, pagup, freemius
-Tags: Automatic linking, Internal links, Link building, SEO, User experience
+Tags: internal links, anchor text, seo, link building, automatic linking
 Requires at least: 4.1
 Requires PHP: 7.4
 Tested up to: 6.9
 Stable tag: 2.0.4
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-This fully automated plugin creates and boosts your internal linking in 2 clicks, using Yoast / Rank Math Focus keywords as anchor text for internal link building.
+Build internal links from focus keywords. Manual SYNC in Free, continuous auto-sync in Pro.
 
 == Description ==
 
-**100% AUTOMATIC INTERNAL LINKING PLUGIN FOR WORDPRESS. NO NEED TO BE AN EXPERT, 2 CLICKS AND IT'S DONE!**
+**Automatic Internal Links for SEO** is a WordPress plugin that creates internal links from focus keywords and optional custom link rules.
 
-★ ★ ★ ★ ★
+It is designed for site owners who want to improve internal linking coverage without manually adding links to every page.
 
-You all know that using the right internal linking strategy can boost your SEO! Before your content can rank, it needs links. Internal links connect your content and give Google an idea of the structure of your website. The more links an important page receives, the more important it will seem to search engines. Therefore, good internal links are crucial to your [SEO](https://en.wikipedia.org/wiki/Search_engine_optimization).
+Official documentation: [https://autolinksforseo.com/internal-links](https://autolinksforseo.com/internal-links)
 
-**The Automatic links for SEO plugin is a revolution in the field of internal linking. No need to manually create your links with any other WordPress plugins. This plugin will do it for you, in automatic mode, using Yoast / Rank Math Focus keywords as **[**anchor text**](https://www.reliablesoft.net/what-is-anchor-text/)** for internal link building.**
+= Quick product facts =
 
-**How it works (short version)**
---------------------------------
+- **Product type:** WordPress internal linking plugin
+- **Core signal:** focus keywords
+- **Supported SEO plugins:** Yoast SEO, Rank Math, All in One SEO (AIOSEO)
+- **Free workflow:** manual SYNC
+- **Pro workflow:** continuous auto-sync / background sync
+- **Manual custom links:** yes
+- **External links:** yes
+- **WooCommerce product pages:** Pro
+- **External AI API:** no
+- **Goal:** improve internal linking structure and reduce manual work
 
-Once the plugin is installed, take a few minutes to read the few explanations to understand which features to use.
+= What Automatic Internal Links does =
 
-- Make sure you select the correct options in the "Settings" section. These are generalized to all the functionalities of the plugin (SYNC, AUTO LINKS, INTERNAL / EXTERNAL LINKS), such as for example:
-    - **Where to apply**: if you want the plugin to limit link creation only to pages, articles, products and "custom post types".
-    - **Where to NOT apply**: if you want to exclude pages, articles, and others (note that you can also exclude some pages by using the META BOX visible in the SIDEBAR of each of your pages).
-    - **Exclude HTML Tags:** if you want to limit link creation to your content (by default, H1, H2, H3 tags are excluded)
-    - **Priority:** if you want the links to be created to override the links already created
-    - **Max links:** the number of links to create per page (make sure not to create too many, 2 is a good average)
-    - **New Tab:** if the created links should open in a new window
-    - **No Follow:** if the NOFOLLOW attribute must be added to created links (not recommended - only for external links)
-    - **Partial Match:** if the "Anchor text" created can vary depending on whether the word found contains a variation (the plural form).
-    - **Case sensitive:** if the "anchor text" created must have the same "shape" (capital letters, for example)
+Automatic Internal Links scans focus keywords and creates link rules that are then applied to supported post content.
 
-Once done, you can start synchronization from the **SYNC **button.
+Depending on your configuration, the plugin can:
 
-Once launched, a log will appear just below showing you all the links being created.
+- create internal links from focus keywords
+- create custom manual internal links
+- create custom external links
+- limit the number of links per page
+- use partial match or exact-style matching
+- add bold formatting to linked anchor text
+- add `nofollow` and `target="_blank"` where needed
+- exclude HTML tags, excluded keywords, URLs, or specific pages
+- keep an activity log of synchronized links
 
-Once finished, if you want to view all the links created by the plugin, simply go to "**Activity Log**".
+= What Automatic Internal Links does not do =
 
-Then you can also create custom links manually by going to the "Custom Manual links" section.
+Automatic Internal Links does **not** do the following:
 
-- The "**Internal links**" feature allows you to create internal links from custom words (anchor text) (other than "focus Keywords") for existing pages on your website
-- The "**External links**" feature allows you to create external links also from specific words (Anchor text)
+- it does **not** guarantee rankings
+- it does **not** replace editorial judgment for anchor text strategy
+- it does **not** support ACF content fields
+- it does **not** fully distinguish identical words across languages on multilingual sites
+- it does **not** add taxonomy or product category linking out of the box
+- it does **not** require an external AI or SaaS API
 
-An editable "Log" is available on the same page allowing you to modify each of these "custom" links.
+This distinction matters: the plugin is a **focus-keyword-driven linking engine**, not a promise of automatic SEO success.
 
-**How it works (explanations)?**
+= Free vs Pro =
 
-Automatic Internal links for SEO works from the "Focus Keywords" (META tag Keyword) used with the help of Yoast SEO or Rank Math when creating META data (the titles and descriptions listed by Google when you do a search).
+This distinction must be clear.
 
-**Considering that the words (or combinations of words) used as "Focus Keywords" when you created your META data are important as they represent the theme for which you want your content to be understood by search engines and also that one of the factors that play a role on how valuable a link is, is the anchor text,** this plugin will scan your website for these "Focus Keyword" and identify / match the pages, articles, or products where they have been found.
+**Free edition**
+- manual **SYNC** workflow
+- settings and exclusions
+- custom internal links
+- custom external links
+- activity log
+- supported SEO plugins and selected post types
+- suitable for controlled, manual synchronization
 
- Then, it will scan the content of your website looking for words or combinations of words similar to these "Focus Keywords" (the plugin offers a certain flexibility in the identification of these words, in particular via some options like "Partial Match, Case sensitive, ... ).
+**Pro edition**
+- **AUTO LINKS** / continuous auto-sync
+- background sync with schedule and batch controls
+- WooCommerce product page support
+- product pages for custom internal and external links
+- per-page disable control
 
-**Once identified, these will be automatically converted into "anchor text" with a link redirecting to the page to which they correspond.**
+If you want the plugin to keep new or updated content synchronized automatically, that is a **Pro** feature.
 
-For example, if you have written a page for which you have defined as "Focus Keyword" the word "Mechanical", the plugin will scan your website for the word "Mechanical" and once found, it will automatically create a link to the page where this "Focus Keyword" was found. If you subsequently change this "Focus Keyword" to something else, the previously created links will be deleted and new links will be created.
+See plans and documentation: [https://autolinksforseo.com/pricing](https://autolinksforseo.com/pricing)
 
-The particularity of this plugin is that the detection of new content created is done on an automatic basis! In other words, the plugin will continuously scan your website looking for new links to create from "Focus Keywords".
+= How it works =
 
-But there is more! Once the plugin is installed, you will be offered 2 options: **SYNC & AUTO LINKS**.
+1. Select the post types you want to cover
+2. Configure exclusions and linking rules
+3. The plugin reads focus keywords from the supported SEO plugin
+4. Run **SYNC** to build links from those focus keywords
+5. Review the activity log
+6. Optionally add custom internal or external links
+7. In Pro, enable continuous auto-sync for new and updated content
 
-**The SYNC function**, from the chosen configuration (Priority, number of links, etc.), without even having to identify anything, will scan your website for "Focus Keywords" and automatically create all the corresponding links. Once done, depending on your activity on the website, the plugin will notify you of the existence of new links to synchronize. **This last operation is manual.**
+= Why this plugin is useful =
 
-**The AUTO LINKS function**is 100% automated. In other words, the plugin will automatically detect page updates or new pages created and proceed directly to the creation of the links, **without you having to do anything.**
+Internal linking often fails for the same reasons:
 
-Thus, your internal linking strategy evolves at the same time as the creation of your content and will boost your SEO and [Web traffic](https://en.wikipedia.org/wiki/Web_traffic).
+- content grows faster than editors can maintain links
+- deep pages stay underlinked
+- orphaned or weak pages remain invisible in the internal graph
+- anchor text is inconsistent across the site
 
-**About the PRO version**
+Automatic Internal Links helps you apply a repeatable internal linking workflow instead of depending on manual link placement everywhere.
 
-The PRO version allows you to activate several features including:
+It also works naturally as part of a broader SEO pipeline:
 
-- Woocommerce product pages for the "SYNC" feature.
-- The "AUTO LINK" feature (Continuous sync)
-- Product pages for Custom internal / external links
+- **Auto Focus Keyword for SEO** creates the focus keyword signal
+- **Automatic Internal Links for SEO** uses that signal to build links
 
-**How does it work with search engines?**
+Pipeline overview: [https://autolinksforseo.com/pipeline](https://autolinksforseo.com/pipeline)
 
-Here's what Google says:
+= Compatibility =
 
-*Google must constantly search for new pages and add them to its list of known pages. Some pages are known because Google has already crawled them before. Other pages are discovered when Google follows a link from a known page to a new page.*
+Automatic Internal Links supports focus keyword data from:
 
-When Google (or any other [search engine](https://en.wikipedia.org/wiki/Search_engine)) crawls a website, it does so by following internal links using the Google bot. The bot reaches the homepage of a website (or any other page) and starts following the first link that it comes across on the site. By following such links, it can understand the relationships between different web pages within a website.
+- **Yoast SEO**
+- **Rank Math**
+- **All in One SEO (AIOSEO)**
 
-[Internal links](https://en.wikipedia.org/wiki/Internal_link) also give Google an idea of your website structure and that's the purpose of adding links throughout your content. They help you to build a site hierarchy, allowing you to provide more value to important web pages on your site or blog posts than the rest. A good internal linking strategy allows the distribution of page rank and link juice from one page to another
+Known limitations:
 
-The perfect example of internal link usage is [**Wikipedia**](https://en.wikipedia.org)**.** If you view any page on Wikipedia you will immediately notice that they are using tens of internal links (with keywords as the anchor text) and guess what? Wikipedia appears very often on top of search engine results pages ... !
+- **ACF:** not supported for content processing
+- **WPML / Polylang:** partially supported; identical words across languages may still be ambiguous
+- **WooCommerce products:** Pro
+- **Taxonomy / category pages:** not covered by default
 
-Google Recommendations on Internal Links : Matt Cutts (former head of the Google Quality team) in this video confirmed that internal links are treated differently from external links and provided that you are not doing any exaggerations (for example having more than 100 links per page), you don't have to worry that you are violating Google webmaster guidelines.
+= Performance profile =
 
-Check here for more details : <https://youtu.be/6ybpXU0ckKQ> 
+Automatic Internal Links is designed to remain practical on real WordPress sites.
 
-**What are internal links?**
+The plugin includes caching and batched workflows to reduce repeated heavy operations. Actual impact depends on content volume, matching rules, hosting, theme output, and publishing activity.
 
-Internal linking is essential to any website because it helps establish site architecture and spread the link juice. An internal link is any link from one page on your website to another page on your website. Both your users and search engines use links to find content on your website. They won't find a page if there are no links to it.
+A cautious internal linking setup is usually better than an aggressive one. In most cases, a small number of relevant links per page is preferable.
 
-**Why is internal linking important?**
+= Links =
 
-For a very simple reason. Just because you post content on your website doesn't mean it is:
+- [Official documentation](https://autolinksforseo.com/internal-links)
+- [Pricing and plans](https://autolinksforseo.com/pricing)
+- [Compatibility and FAQ](https://autolinksforseo.com/compatibility)
+- [Pipeline overview](https://autolinksforseo.com/pipeline)
+- [Full changelog](https://autolinksforseo.com/guides/changelog-ail)
 
-- Directly available in search engine results
-- Accessible & Indexable by search engines
+= About the publisher =
 
-And this, even if your website has an up-to-date sitemap.
 
-For content, whatever it is, to be crawled by search engines, then indexed and ultimately to generate SEO, it must be accessible through the internal linking! In other words, crawlers, moving from link to link on your website, must be able to access it quickly.
+Automatic Internal Links for SEO is developed by [Pagup](https://pagup.com/), a digital readability firm based in Quebec, Canada.
 
-But this is usually where two major obstacles prevent crawling and indexing of this content (and this is one of the biggest SEO issues) on millions of websites: (too) deep pages and orphaned pages.
 
-Deep pages (also called "weak pages") are pages too deep in the structure of your website that  struggle to be discovered and crawled on a regular basis by crawlers, which decreases their importance (at search engine eyes) and therefore decrease the likelihood that they generate SEO.
+Internal linking is a structural layer of digital readability. It tells search engines and AI systems how your pages relate to each other, which pages carry authority, and how your content is organized. Without coherent internal links, even well-written content remains structurally isolated — a problem known as [canonical fragility](https://pagup.com/en/glossary/canonical-fragility/).
 
-Orphaned pages are also a common problem. These are pages identified as existing by crawlers, from your sitemaps, but which cannot be found by search engines, via internal links. These are therefore pages that will not generate any ranking on search engines.
 
-An automatic internal linking solution will allow you to flatten your URL structure so as to make all of your content much more accessible by search engines and therefore more likely to generate SEO. Moreover, internal link building has several other advantages as it helps build page authority, usability, connections between web pages, user experience, and more important, an efficient Google ranking.
+This plugin automates the creation and maintenance of internal links so that your site's structure remains coherent as your content grows.
 
-**Internal links vs external links**
 
-Every website consists of internal and external links. Internal links connect pages and posts on your own website and external links connect your pages to other websites
+= Part of the Pagup ecosystem =
+
+
+* [pagup.com](https://pagup.com/) — Digital readability firm. Diagnostic, semantic architecture, AI governance.
+* [gautierdorval.com](https://gautierdorval.com/) — Doctrine, canonical definitions, interpretive governance research.
+* [interpretive-governance.org](https://interpretive-governance.org/) — Formal versioned standard for interpretive governance.
+* [autolinksforseo.com](https://autolinksforseo.com/) — Documentation and resources for Automatic Internal Links.
+
 
 == Installation ==
+
+= Installing from WordPress =
+
+1. Go to Plugins > Add New in WordPress admin
+2. Search for "Automatic Internal Links for SEO"
+3. Click "Install Now"
+4. Click "Activate"
+5. Open "Auto Links for SEO" in the admin menu
 
 = Installing manually =
 
 1. Unzip all files to the `/wp-content/plugins/automatic-internal-links-for-seo` directory
-2. Log into WordPress admin and activate the 'SEO Auto Internal Links' plugin through the 'Plugins' menu
-3. Go to "Auto Links for SEO" in the left-hand menu to start work on it.
+2. Activate the plugin through the 'Plugins' menu in WordPress
+3. Open "Auto Links for SEO" in the admin menu
+
+= After activation =
+
+1. Select the post types you want to cover
+2. Configure exclusions and core settings
+3. Run **SYNC**
+4. Review the activity log
+5. Add custom manual links if needed
 
 == Frequently Asked Questions ==
 
-= Is it possible to use this plugin with another SEO plugin? =
-At the moment, the Auto internal links for SEO plugin is only compatible with Yoast SEO and Rank Math plugins. Upcoming updates will allow greater compatibility.
+= What is Automatic Internal Links for SEO? =
 
-= Is it possible to exclude a particular area from the text? =
-Yes. it's possible. You’ll need to “inspect” the element using DevTools. Get the CSS id and add it in the Exclude HTML Tags / ID / Class section like this: #container (if it's a class then like this: .skip-autolinks). All links inside that container will be skipped.
+It is a WordPress plugin that creates internal links from focus keywords and optional custom link rules.
 
-= Is it possible to “blacklist” keyword from being used as anchors? =
-Yes. There is a section where you can enter all your keywords, one by line, they will be skipped during the process. Please note that excluded keywords are case sensitive by default. If your keyword is adding links to both cases, then make sure to include both (case sensitive & insensitive) on each line. e.g. “wordpress” in excluded keywords list will not skip “WordPress”. You can just add “WordPress” on new line to skip both.
+= Which SEO plugins are supported? =
 
-= Is this plugin compatible with Advanced Custom Fields (ACF)? =
-For the moment, this plugin is not compatible with ACF (as ACF use postmeta for custom field while this plugin is using the_content filter which doesn't support postmeta). 
+The plugin supports **Yoast SEO**, **Rank Math**, and **All in One SEO (AIOSEO)**.
+
+= Is the free version fully automatic? =
+
+No. The free edition uses a **manual SYNC** workflow. Continuous auto-sync / AUTO LINKS is a **Pro** feature.
+
+= What does SYNC do? =
+
+SYNC scans the supported focus keywords and creates the corresponding links according to your configuration.
+
+= What does AUTO LINKS do? =
+
+AUTO LINKS keeps link creation synchronized automatically for new or updated content. This is a Pro feature.
+
+= Can I create custom links manually? =
+
+Yes. The plugin includes custom internal and custom external link workflows.
+
+= Does it support WooCommerce? =
+
+WooCommerce product page support is available in Pro.
+
+= Does it support ACF? =
+
+No. ACF content fields are not supported by the standard content processing workflow.
+
+= Does it support WPML or Polylang? =
+
+Partially. The plugin can detect content across languages, but identical words used in different languages may still create ambiguity.
+
+= Can I exclude areas, keywords, or URLs? =
+
+Yes. The plugin includes exclusions for tags, keywords, URLs, and specific pages.
+
+= Does it create self-links? =
+
+No. The plugin is designed to avoid linking a page to itself.
 
 = Does it work with scheduled publications? =
-Yes. As soon as your content is published, this plugin will detect your URL and focus keywords and will create links everywhere needed.
 
-= Does the plugin consume a lot of server resources during the "auto-links" process? =
-No! The SYNC & AUTO SYNC features take very little resources. Meaning that even a shared host should handle this continuous process nicely.
+Yes. Published content can be detected and synchronized according to the plugin workflow.
 
-= About the PRO version, does it add links to product categories as well (tags, attributes, ...) - Category or Taxonomy pages? =
-No. The SYNC process is only taking posts data. But it’s on our TODO list for future updates.
+= Does the plugin clean up after deactivation? =
 
-= Is this plugin compatible with WPML or Polylang plugins? =
-Partially. Meaning that this plugin will detect all your pages, even those (duplicated) created with WPML, and will created links as expected. However, the Auto Internal Links plugin is not yet able to differentiate between identical words, used in different languages. For example, the word: “stress”, is spelled the same way in English and in French. This means that when it is detected as a “Focus Keyword”, it may happen that links to English pages are created in the French version of the site, and vice versa (the plugin is not capable, for the moment, to distinguish the languages used between the pages). This is a problem that we are trying to find a solution to.
+The plugin includes a **remove settings** option. When enabled, plugin settings, sync data, transients, and plugin tables can be removed on deactivation.
 
-= Does this plugin exclude breadcrumb paths when creating links? =
-Yes. No relation to breadcrumbs.
+= Will it slow down my site? =
 
-= Is it possible to avoid a page/post/product from being used by the plugin? =
-Yes. You can use the META Box available on sidebar of your post to “unSync” a specific page.
+The plugin is designed with caching and batched workflows, but actual impact depends on your content volume, settings, and hosting.
 
-= What type of external links should I create? =
-Regarding external links, we recommend applying 3 rules. The first is to always make an external link to an authority page for which search engines have no doubts as to its meaning (eg: Wikipedia). Then make sure you only make one such external link per page. Finally, be sure to include a NoFollow attribute in your link to maximize the performance of crawlers on YOUR site
+= Where can I find the full documentation? =
 
-= Should I use a Nofollow attribute for internal links? =
-NO. It is not recommended to use the NoFollow attribute for internal links.
+Documentation is available at [https://autolinksforseo.com/internal-links](https://autolinksforseo.com/internal-links).
 
-= Does this plugin support a wide range of character encodings? =
-Yes, so far so good. Let us know if you are having an issue with this.
+= Who develops Automatic Internal Links? =
 
-= Is it possible to prevent that links created by the plugin are not redirecting to themselves? =
-YES. This plugin was made to avoid this type of issue.
+Automatic Internal Links for SEO is developed by [Pagup](https://pagup.com/), a digital readability firm based in Quebec, Canada. Pagup specializes in semantic content architecture, interpretive SEO, and AI governance.
+
+= Why does internal linking matter for AI interpretation? =
+
+When an AI system reads your site, it does not just look at individual pages. It builds a map of relationships: which pages link to which, what anchor text is used, and how content clusters form. A site with weak internal linking presents itself as a collection of isolated pages rather than a coherent corpus. This makes it harder for AI systems to determine your areas of expertise, your service hierarchy, and the relationships between your entities. Learn more about [semantic content architecture](https://pagup.com/en/services/semantic-content-architecture/).
+
+= What is digital readability? =
+
+Digital readability is the capacity of a website to be correctly understood by all four reading layers: humans, search engines, generative AI systems, and autonomous agents. Learn more at [pagup.com](https://pagup.com/en/glossary/digital-readability/).
+
 
 == Screenshots ==
 
-1. Automatic Internal Links for SEO Settings Page
-2. Automatic Internal Links for SEO Settings Page
+1. Auto Links for SEO dashboard
+2. SYNC workflow and progress
+3. Manual internal and external links
+4. Activity log and settings
 
 == Changelog ==
 
-= 1.0.0 =
-* 🚀 Initial release.
-
-= 1.0.1 =
-* 🐛 FIX: Fatal error because of type hinting.
-* 🐛 FIX: Script type issue with import modules.
-* 👌 IMPROVE: Notification to refresh page after 20 seconds if SYNC process is stuck.
-
-= 1.0.2 =
-* 🐛 FIX: Issue with PHP 5.6
-
-= 1.0.3 =
-* 👌 IMPROVE: Notifications for opt-in
-
-= 1.0.4 =
-* 🐛 FIX: Security fix
-
-= 1.0.5 =
-* 👌 IMPROVE: MySQL query for fetching data
-
-= 1.0.6 =
-* 👌 IMPROVE: Updated Freemius to v2.5.3
-
-= 1.1.0 =
-* 👌 IMPROVE: Slow performance when there are more than 1000 items
-* 👌 IMPROVE: New Fetch items asynchronous function to collect items data
-* 👌 IMPROVE: Sync items asynchronous function to store items data in logs
-* 👌 IMPROVE: Performance for front-end by fetching data on visited items
-* 👌 IMPROVE: Storing data in WordPress transients cache
-* 👌 IMPROVE: Global override settings for links
-* 👌 IMPROVE: Loading progress bar for fetch and sync items
-* 👌 IMPROVE: Memory notification for optimal performance if there are 1000+ items
-* 🐛 FIX: Crashing issues while syncing items
-* 🐛 FIX: Error handling for Sync process
-* 🐛 FIX: Layout issue for navigation buttons. Improved layout
-
-= 1.1.1 =
-* 👌 IMPROVE: Caching deleting process with WP schedule cron-job
-* 🐛 FIX: Deleting cache issues if Yoast keyword is created/updated/deleted
-* 🐛 FIX: Deleting cache issue if manual links are created/updated/deleted
-* 🐛 FIX: Dropping custom table if setting option is checked to remove data
-* 👌 IMPROVE: Updated Freemius to v2.5.6
-* 👌 IMPROVE: Compatible check with WordPress v6.2
-
-= 1.1.2 =
-* 🐛 FIX: Security fix
-
-= 1.2.0 =
-* 🐛 FIX: Ajax Actions causing conflict
-* 👌 IMPROVE: Updated Freemius to v2.6.1
-
-= 1.2.1 =
-* 🐛 FIX: MySQL query issue with special characters
-* 👌 IMPROVE: Backward compatibility with serialized arrays in upcoming major release
-* 👌 IMPROVE: Updated Freemius to v2.8.1
-
-= 1.2.2 =
-* 🐛 FIX: Security issue.
-
-= 2.0.0 =
-* 🎉 NEW: Completely redesigned options interface with modern tab-based navigation
-* 🎉 NEW: All in One SEO plugin compatibility added
-* ⭐ PRO: Background Auto-Sync feature with configurable batch size and schedule
-* 👌 IMPROVE: Streamlined manual link creation process
-* 👌 IMPROVE: Enhanced activity log browsing and management
-* 👌 IMPROVE: Completely refactored codebase for better performance
-* 👌 IMPROVE: Better error handling and user notifications
-* 👌 IMPROVE: More intuitive settings organization
-* 👌 IMPROVE: Simplified navigation between different functions
-* 👌 IMPROVE: Enhanced bulk operations for links management
-* 👌 IMPROVE: More efficient database operations
-* 🐛 FIX: Various UI/UX inconsistencies from previous versions
-* 👌 IMPROVE: Updated Freemius to v2.9.0
-* 🚨 NOTE: Major update with significant improvements in stability and performance
-
-= 2.0.1 =
-* 🐛 FIX: Freemius SDK Security fix
-
-= 2.0.2 =
-* 👌 IMPROVE: Disable Internal Links on Individual Pages via Metabox.
+= 2.0.4 =
+* SECURITY: Enhanced input sanitization and output escaping to help prevent XSS vulnerabilities
+* SECURITY: Improved nonce validation to help prevent CSRF attacks
+* FIX: Resolved WordPress.org compliance issues
+* FIX: Proper internationalization support with correct text domains
+* UPDATE: Upgraded Freemius SDK to v2.13.0
 
 = 2.0.3 =
-* 🚀 MAJOR: Eliminated heavy db queries. Wp-admin pages load significantly faster
-* 🎯 NEW: Smart caching system for page loads
-* 🎯 NEW: Added checkbox on Settings page to hide admin menu badge for required sync items if experiencing slow admin pages.
-* ✅ FIX: Menu badge numbers update correctly when deleting activity logs or syncing via cron job
-* 👌 IMPROVE: Updated Freemius to v2.12.0
+* MAJOR: Eliminated heavy database queries for faster wp-admin pages
+* NEW: Smart caching system for page loads
+* FIX: Menu badge numbers update correctly when deleting activity logs or syncing via cron job
 
-= 2.0.4 =
-  * 🔒 SECURITY: Enhanced input sanitization and output escaping to prevent XSS vulnerabilities
-  * 🔒 SECURITY: Improved nonce validation to prevent CSRF attacks
-  * 🐛 FIX: Resolved WordPress.org plugin directory compliance issues
-  * 🐛 FIX: Proper internationalization support with correct text domains
-  * 🐛 FIX: Updated localized JavaScript variable name for better consistency
-  * 📦 UPDATE: Upgraded Freemius SDK to v2.13.0
+= 2.0.2 =
+* IMPROVE: Disable internal links on individual pages via metabox
+
+Older release notes: [https://autolinksforseo.com/guides/changelog-ail](https://autolinksforseo.com/guides/changelog-ail)
