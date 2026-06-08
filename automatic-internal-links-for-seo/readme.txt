@@ -3,8 +3,8 @@ Contributors: the-rock, pagup, freemius
 Tags: internal links, anchor text, seo, link building, automatic linking
 Requires at least: 4.1
 Requires PHP: 7.4
-Tested up to: 6.9
-Stable tag: 2.0.4
+Tested up to: 7.0
+Stable tag: 2.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -271,6 +271,9 @@ Digital readability is the capacity of a website to be correctly understood by a
 4. Activity log and settings
 
 == Changelog ==
+
+= 2.0.5 =
+* Update Freemius SDK to 2.13.1.
 
 = 2.0.4 =
 * SECURITY: Enhanced input sanitization and output escaping to help prevent XSS vulnerabilities
