@@ -4,7 +4,7 @@ Tags: internal links, anchor text, seo, link building, automatic linking
 Requires at least: 4.1
 Requires PHP: 7.4
 Tested up to: 7.0
-Stable tag: 2.0.6
+Stable tag: 2.0.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,7 +22,7 @@ Official documentation: [https://autolinksforseo.com/internal-links](https://aut
 
 - **Product type:** WordPress internal linking plugin
 - **Core signal:** focus keywords
-- **Supported SEO plugins:** Yoast SEO, Rank Math, All in One SEO (AIOSEO)
+- **Supported SEO plugins:** Yoast SEO, Rank Math, SEOPress, All in One SEO (AIOSEO)
 - **Free workflow:** manual SYNC
 - **Pro workflow:** continuous auto-sync / background sync
 - **Manual custom links:** yes
@@ -118,6 +118,7 @@ Automatic Internal Links supports focus keyword data from:
 
 - **Yoast SEO**
 - **Rank Math**
+- **SEOPress**
 - **All in One SEO (AIOSEO)**
 
 Known limitations:
@@ -196,7 +197,7 @@ It is a WordPress plugin that creates internal links from focus keywords and opt
 
 = Which SEO plugins are supported? =
 
-The plugin supports **Yoast SEO**, **Rank Math**, and **All in One SEO (AIOSEO)**.
+The plugin supports **Yoast SEO**, **Rank Math**, **SEOPress**, and **All in One SEO (AIOSEO)**.
 
 = Is the free version fully automatic? =
 
@@ -271,6 +272,9 @@ Digital readability is the capacity of a website to be correctly understood by a
 4. Activity log and settings
 
 == Changelog ==
+
+= 2.0.7 =
+* Added SEOPress and AIOSEO as keyword sources for internal-link detection; security baseline hardening.
 
 = 2.0.6 =
 * Restore admin translations and remove external Google Fonts from the admin bundle.

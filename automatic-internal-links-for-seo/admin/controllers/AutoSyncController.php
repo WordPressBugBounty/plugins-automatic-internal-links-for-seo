@@ -183,7 +183,7 @@ class AutoSyncController extends SettingsController {
         return [
             'post_id'        => $post_id,
             'title'          => $post->post_title,
-            'keyword'        => $this->get_focus_keyword( $post_id ),
+            'keyword'        => $this->get_focus_keyword_value( $post_id ),
             'url'            => get_permalink( $post_id ),
             'use_custom'     => 0,
             'new_tab'        => 0,
@@ -195,34 +195,6 @@ class AutoSyncController extends SettingsController {
             'max_links'      => 3,
             'post_type'      => $post->post_type,
         ];
-    }
-
-    /**
-     * Retrieves the focus keyword for a given post ID.
-     *
-     * Depending on the SEO plugin in use, this function fetches the focus keyword 
-     * from different sources. If 'aioseo_table' is the focus keyword type, it 
-     * queries the aioseo_posts table for keyphrases, decodes the JSON, and returns 
-     * the keyphrase. Otherwise, it retrieves the keyword from post meta using the 
-     * specified focus keyword type.
-     *
-     * @param int $post_id The ID of the post to retrieve the focus keyword for.
-     * @return string The focus keyword associated with the post, or an empty string 
-     *                if no keyword is found.
-     */
-    private function get_focus_keyword( $post_id ) {
-        $focus_keyword_type = $this->focus_keyword();
-        if ( $focus_keyword_type === 'aioseo_table' ) {
-            global $wpdb;
-            $keyphrases = $wpdb->get_var( $wpdb->prepare( "SELECT keyphrases FROM {$wpdb->prefix}aioseo_posts WHERE post_id = %d", $post_id ) );
-            if ( $keyphrases ) {
-                $data = json_decode( $keyphrases, true );
-                return $data['focus']['keyphrase'] ?? '';
-            }
-        } else {
-            return get_post_meta( $post_id, $focus_keyword_type, true );
-        }
-        return '';
     }
 
     /**

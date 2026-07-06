@@ -11,10 +11,49 @@ trait SettingHelper
             return '_yoast_wpseo_focuskw';
         } elseif ( class_exists( 'RankMath' ) ) {
             return 'rank_math_focus_keyword';
+        } elseif ( defined( 'SEOPRESS_VERSION' ) || function_exists( 'seopress_get_service' ) ) {
+            return '_seopress_analysis_target_kw';
         } elseif ( function_exists( 'aioseo' ) ) {
             return 'aioseo_table';
         }
         return '';
+    }
+
+    public function get_focus_keyword_value( int $post_id ) : string {
+        $focus_keyword_type = $this->focus_keyword();
+
+        if ( $focus_keyword_type === '' ) {
+            return '';
+        }
+
+        if ( $focus_keyword_type === 'aioseo_table' ) {
+            global $wpdb;
+
+            $keyphrases = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT keyphrases FROM {$wpdb->prefix}aioseo_posts WHERE post_id = %d",
+                    $post_id
+                )
+            );
+
+            return $this->extract_aioseo_focus_keyword( $keyphrases );
+        }
+
+        return (string) get_post_meta( $post_id, $focus_keyword_type, true );
+    }
+
+    private function extract_aioseo_focus_keyword( $keyphrases ) : string {
+        if ( empty( $keyphrases ) || !is_string( $keyphrases ) ) {
+            return '';
+        }
+
+        $data = json_decode( $keyphrases, true );
+
+        if ( !is_array( $data ) || empty( $data['focus']['keyphrase'] ) ) {
+            return '';
+        }
+
+        return sanitize_text_field( $data['focus']['keyphrase'] );
     }
 
     /**

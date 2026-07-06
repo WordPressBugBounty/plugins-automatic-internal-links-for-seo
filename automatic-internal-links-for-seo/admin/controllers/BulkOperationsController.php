@@ -75,11 +75,14 @@ class BulkOperationsController extends SettingsController {
             return;
         }
     
-        if (!isset($_POST['data'])) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- validateRequest() verifies AJAX nonce and capability before reading input.
+        $post_data = isset($_POST['data']) ? wp_unslash($_POST['data']) : null;
+
+        if (!is_array($post_data)) {
             $this->handleError('invalid_data', 'No data provided');
         }
     
-        $data = $this->validateAddRequest($_POST['data']);
+        $data = $this->validateAddRequest($post_data);
         
         if (empty($data['post_id']) || empty($data['title']) || empty($data['keyword'])) {
             error_log('Missing required fields');
@@ -136,17 +139,19 @@ class BulkOperationsController extends SettingsController {
      */
    private function validateFetchRequest(): ?array {
        $required = ['batchSize', 'page', 'totalPages', 'offset'];
+       // phpcs:ignore WordPress.Security.NonceVerification.Missing -- fetch() verifies AJAX nonce and capability before this private validator runs.
+       $post_data = wp_unslash($_POST);
    
        foreach ($required as $field) {
-           if (!isset($_POST[$field])) {
+           if (!isset($post_data[$field])) {
                return null;
            }
        }
 
-       $batchSize = absint(sanitize_text_field($_POST['batchSize']));
-       $page = absint(sanitize_text_field($_POST['page']));
-       $totalPages = absint(sanitize_text_field($_POST['totalPages']));
-       $offset = absint(sanitize_text_field($_POST['offset']));
+       $batchSize = absint(sanitize_text_field($post_data['batchSize']));
+       $page = absint(sanitize_text_field($post_data['page']));
+       $totalPages = absint(sanitize_text_field($post_data['totalPages']));
+       $offset = absint(sanitize_text_field($post_data['offset']));
 
        // Ensure we have valid positive numbers
        if ($batchSize < 1 || $page < 1 || $totalPages < 1) {
@@ -186,7 +191,7 @@ class BulkOperationsController extends SettingsController {
         $sanitized['post_id'] = $post_id;
         $sanitized['title'] = sanitize_text_field($data['title'] ?? '');
         $sanitized['url'] = sanitize_text_field($data['url'] ?? '');
-        $sanitized['post_type'] = $this->post_type($post_id);
+        $sanitized['post_type'] = $post_id > 0 ? $this->post_type($post_id) : sanitize_text_field($data['post_type'] ?? '');
 
         // Sanitize other fields
         foreach ($field_order as $field) {

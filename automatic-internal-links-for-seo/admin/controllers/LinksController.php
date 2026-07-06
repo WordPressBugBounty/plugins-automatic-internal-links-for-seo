@@ -109,12 +109,18 @@ class LinksController extends SettingsController
 
         global $wpdb;
     
-        // check the nonce
-        if ( check_ajax_referer( 'ails__nonce', 'nonce', false ) == false ) {
-            wp_send_json_error( "Invalid nonce", 419 );
+        if (!$this->validateRequest()) {
+            return;
         }
 
-        $data = $this->sanitize_link_data($_POST['data']);
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- validateRequest() verifies AJAX nonce and capability before reading input.
+        $post_data = isset($_POST['data']) ? wp_unslash($_POST['data']) : [];
+        if (!is_array($post_data)) {
+            $this->handleError('invalid_data', 'Invalid link data');
+            return;
+        }
+
+        $data = $this->sanitize_link_data($post_data);
 
         $errors = [];
         $errors = $this->required($data, $errors);
@@ -175,18 +181,24 @@ class LinksController extends SettingsController
     public function update_link() {
         global $wpdb;
     
-        // check the nonce
-        if ( check_ajax_referer( 'ails__nonce', 'nonce', false ) == false ) {
-            wp_send_json_error( "Invalid nonce", 419 );
+        if (!$this->validateRequest()) {
+            return;
         }
 
-        $data = $this->sanitize_link_data($_POST['data']);
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- validateRequest() verifies AJAX nonce and capability before reading input.
+        $post_data = isset($_POST['data']) ? wp_unslash($_POST['data']) : [];
+        if (!is_array($post_data)) {
+            $this->handleError('invalid_data', 'Invalid link data');
+            return;
+        }
+
+        $data = $this->sanitize_link_data($post_data);
 
         $errors = [];
         $errors = $this->required($data, $errors);
 
-        $link_id = sanitize_text_field(intval($_POST['data']['id']));
-        $link = $wpdb->get_row( "SELECT * FROM $this->table WHERE id = $link_id" );
+        $link_id = isset($post_data['id']) ? absint($post_data['id']) : 0;
+        $link = $wpdb->get_row($wpdb->prepare("SELECT * FROM $this->table WHERE id = %d", $link_id));
 
         if (!$data['use_custom'] && empty($data['post_id'])) array_push($errors, "Please select a Page / Post / Product");
         
@@ -215,9 +227,6 @@ class LinksController extends SettingsController
     
                 wp_send_json_error( array(
                     'message' => 'Something went wrong',
-                    'sql_query' => $wpdb->last_query,
-                    'sql_error' => $wpdb->last_error,
-                    'data' => $data  // This will show what data was attempted to be saved
                 ), 400);
     
             } else {
@@ -225,8 +234,6 @@ class LinksController extends SettingsController
                 wp_send_json_success( [
                     'message' => "Link has been updated successfully",
                     'link' => $updated,
-                    'sql_query' => $wpdb->last_query,
-                    'data' => $data
                 ] );
 
                 // Delete cache items
@@ -256,17 +263,19 @@ class LinksController extends SettingsController
     public function update_status() {
         global $wpdb;
     
-        // check the nonce
-        if ( check_ajax_referer( 'ails__nonce', 'nonce', false ) == false ) {
-            wp_send_json_error( "Invalid nonce", 419 );
+        if (!$this->validateRequest()) {
+            return;
         }
 
-        $link_id = sanitize_text_field(intval($_POST['id']));
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- validateRequest() verifies AJAX nonce and capability before reading input.
+        $link_id = isset($_POST['id']) ? absint(wp_unslash($_POST['id'])) : 0;
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- validateRequest() verifies AJAX nonce and capability before reading input.
+        $status = isset($_POST['status']) ? sanitize_text_field(wp_unslash($_POST['status'])) : '';
     
         $updated = $wpdb->update( 
             $this->table, 
             array(
-                'status' => sanitize_text_field($_POST['status']) == 'true' ? 1 : 0,
+                'status' => $status == 'true' ? 1 : 0,
             ),
             array( 
                 'id' => $link_id
@@ -281,7 +290,7 @@ class LinksController extends SettingsController
 
         } else {
     
-            $link = $wpdb->get_row( "SELECT * FROM $this->table WHERE id = $link_id" );
+            $link = $wpdb->get_row($wpdb->prepare("SELECT * FROM $this->table WHERE id = %d", $link_id));
     
             wp_send_json_success( [
                 'message' => "Status has been updated successfully",
@@ -318,7 +327,8 @@ class LinksController extends SettingsController
      
         global $wpdb;
         
-        $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- validateRequest() verifies AJAX nonce and capability before reading input.
+        $id = isset($_POST['id']) ? absint(wp_unslash($_POST['id'])) : 0;
         
         // Validate ID
         if (!$id) {
@@ -330,12 +340,14 @@ class LinksController extends SettingsController
         }
      
         // Determine table
-        $table = isset($_POST['table']) && !empty($_POST['table']) 
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- validateRequest() verifies AJAX nonce and capability before reading input.
+        $table_flag = isset($_POST['table']) ? sanitize_text_field(wp_unslash($_POST['table'])) : '';
+        $table = !empty($table_flag)
             ? $this->table_log 
             : $this->table;
         
         // Check if item exists
-        $item = $wpdb->get_row("SELECT title FROM $table WHERE id = $id");
+        $item = $wpdb->get_row($wpdb->prepare("SELECT title FROM $table WHERE id = %d", $id));
         if (!$item) {
             $this->handleError(
                 'not_found',
@@ -389,13 +401,16 @@ class LinksController extends SettingsController
 
         global $wpdb;
 
-        $ids = isset($_POST['ids']) ? array_map('intval', (array)$_POST['ids']) : [];
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- validateRequest() verifies AJAX nonce and capability before reading input.
+        $ids = isset($_POST['ids']) ? array_filter(array_map('absint', (array)wp_unslash($_POST['ids']))) : [];
         if (empty($ids)) {
             $this->handleError('invalid_data', 'No items selected for deletion');
             return;
         }
 
-        $table = isset($_POST['table']) && !empty($_POST['table']) 
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- validateRequest() verifies AJAX nonce and capability before reading input.
+        $table_flag = isset($_POST['table']) ? sanitize_text_field(wp_unslash($_POST['table'])) : '';
+        $table = !empty($table_flag)
             ? $this->table_log 
             : $this->table;
 
@@ -451,7 +466,9 @@ class LinksController extends SettingsController
             return;
         }
 
-        if (isset($_POST['alldone']) && !empty($_POST['alldone'])) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- validateRequest() verifies AJAX nonce and capability before reading input.
+        $all_done = isset($_POST['alldone']) ? sanitize_text_field(wp_unslash($_POST['alldone'])) : '';
+        if (!empty($all_done)) {
             date_default_timezone_set(wp_timezone()->getName());
             $date = date("F d, Y h:i:sa");
             update_option( "autolinks_sync", $date );

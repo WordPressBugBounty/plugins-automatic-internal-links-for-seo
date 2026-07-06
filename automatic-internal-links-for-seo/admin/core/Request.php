@@ -8,6 +8,25 @@ class Request {
     private const ERROR_PREFIX = 'Auto Links';
 
     /**
+     * Gets an unslashed POST value.
+     *
+     * Caller methods are responsible for nonce and capability checks before
+     * using this request helper in a write path.
+     *
+     * @param string $key POST parameter key
+     * @param mixed $default Default value if key not found
+     * @return mixed
+     */
+    private static function post(string $key, $default = null) {
+        if (!self::check($key)) {
+            return $default;
+        }
+
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Request is a sanitization helper; callers own nonce verification.
+        return wp_unslash($_POST[$key]);
+    }
+
+    /**
      * Gets sanitized POST value if it exists in safe values array
      *
      * @param string $key POST parameter key
@@ -20,7 +39,7 @@ class Request {
                 return false;
             }
 
-            $value = $_POST[$key];
+            $value = self::post($key);
             
             if (!in_array($value, $safe, true)) {
                 return false;
@@ -41,11 +60,11 @@ class Request {
      */
     public static function bool(string $key): int {
         try {
-            if (!isset($_POST[$key])) {
+            if (!self::check($key)) {
                 return 0;
             }
 
-            return filter_var($_POST[$key], FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
+            return filter_var(self::post($key), FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
         } catch (\Exception $e) {
             error_log(sprintf("%s Request Error: %s", self::ERROR_PREFIX, $e->getMessage()));
             return 0;
@@ -59,6 +78,7 @@ class Request {
      * @return bool Whether key exists and has value
      */
     public static function check(string $key): bool {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Request is a sanitization helper; callers own nonce verification.
         return isset($_POST[$key]) && !empty($_POST[$key]);
     }
 
@@ -92,7 +112,8 @@ class Request {
      * @return array Sanitized POST data
      */
     public static function all(): array {
-        return self::array($_POST);
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Request is a sanitization helper; callers own nonce verification.
+        return self::array(wp_unslash($_POST));
     }
 
     /**
@@ -108,7 +129,7 @@ class Request {
                 return $default;
             }
 
-            $value = $_POST[$key];
+            $value = self::post($key);
             
             if (is_array($value)) {
                 return self::array($value);

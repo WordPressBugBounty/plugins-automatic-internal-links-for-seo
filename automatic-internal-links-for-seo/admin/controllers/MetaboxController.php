@@ -158,7 +158,7 @@ class MetaboxController extends SettingsController {
      * Prepares post data for database operations
      */
     private function preparePostData(int $post_id): ?array {
-        $focus_keyword = get_post_meta($post_id, '_yoast_wpseo_focuskw', true);
+        $focus_keyword = $this->get_focus_keyword_value($post_id);
         if (empty($focus_keyword)) {
             return null;
         }

@@ -623,45 +623,30 @@ class SettingsController
         $keywords = [];
         if ($keyword === true) {
             $ids_string = implode(',', array_map('intval', $ids));
-            
-            if (class_exists('WPSEO_Meta')) {
-                // Fetch all Yoast keywords in one query
-                $meta_key = '_yoast_wpseo_focuskw';
-                $query = "SELECT post_id, meta_value 
-                        FROM {$wpdb->postmeta} 
-                        WHERE post_id IN ($ids_string) 
-                        AND meta_key = '$meta_key'";
-                
-                $results = $wpdb->get_results($query);
-                foreach ($results as $result) {
-                    $keywords[$result->post_id] = $result->meta_value;
-                }
-            } 
-            elseif (class_exists('RankMath')) {
-                // Fetch all Rank Math keywords in one query
-                $meta_key = 'rank_math_focus_keyword';
-                $query = "SELECT post_id, meta_value 
-                        FROM {$wpdb->postmeta} 
-                        WHERE post_id IN ($ids_string) 
-                        AND meta_key = '$meta_key'";
-                
-                $results = $wpdb->get_results($query);
-                foreach ($results as $result) {
-                    $keywords[$result->post_id] = $result->meta_value;
-                }
-            }
-            elseif (function_exists('aioseo')) {
-                // Fetch all AIOSEO keywords in one query
-                $query = "SELECT post_id, keyphrases 
-                        FROM {$wpdb->prefix}aioseo_posts 
+
+            $focus_keyword_type = $this->focus_keyword();
+
+            if ($focus_keyword_type === 'aioseo_table') {
+                $query = "SELECT post_id, keyphrases
+                        FROM {$wpdb->prefix}aioseo_posts
                         WHERE post_id IN ($ids_string)";
-                
+
                 $results = $wpdb->get_results($query);
                 foreach ($results as $result) {
-                    $keyphrases_data = json_decode($result->keyphrases, true);
-                    if (isset($keyphrases_data['focus']['keyphrase'])) {
-                        $keywords[$result->post_id] = $keyphrases_data['focus']['keyphrase'];
-                    }
+                    $keywords[$result->post_id] = $this->extract_aioseo_focus_keyword($result->keyphrases);
+                }
+            } elseif ($focus_keyword_type !== '') {
+                $query = $wpdb->prepare(
+                    "SELECT post_id, meta_value
+                        FROM {$wpdb->postmeta}
+                        WHERE post_id IN ($ids_string)
+                        AND meta_key = %s",
+                    $focus_keyword_type
+                );
+
+                $results = $wpdb->get_results($query);
+                foreach ($results as $result) {
+                    $keywords[$result->post_id] = $result->meta_value;
                 }
             }
         }

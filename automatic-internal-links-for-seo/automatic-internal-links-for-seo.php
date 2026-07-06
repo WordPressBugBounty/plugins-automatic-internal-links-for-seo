@@ -2,9 +2,9 @@
 
 /*
 * Plugin Name: Automatic Internal Links for SEO by Pagup
-* Description: This fully automated plugin creates and boosts your internal linking in 2 clicks, using Yoast / Rank Math Focus keywords as anchor text for internal link building.
+* Description: This fully automated plugin creates and boosts your internal linking in 2 clicks, using Yoast, Rank Math, SEOPress, or All in One SEO focus keywords as anchor text for internal link building.
 * Author: Pagup
-* Version: 2.0.6
+* Version: 2.0.7
 * Author URI: https://pagup.com/
 * Text Domain: automatic-internal-links-for-seo
 * Domain Path: /languages/

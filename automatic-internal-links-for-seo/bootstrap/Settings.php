@@ -93,7 +93,7 @@ class Settings {
     private function registerAjaxHandlers() : void {
         // Settings Actions
         $this->addAjaxAction( 'ails_save_options', [$this->settingsController, 'save_options'] );
-        $this->addAjaxAction( 'ails_search_posts', [$this->settingsController, 'search_posts_callback'], true );
+        $this->addAjaxAction( 'ails_search_posts', [$this->settingsController, 'search_posts_callback'] );
         $this->addAjaxAction( 'ails_update_onboarding', [$this->settingsController, 'update_onboarding'] );
         // Bulk Operations
         $this->addAjaxAction( 'ails_bulk_add', [$this->bulkController, 'add'] );
@@ -110,6 +110,14 @@ class Settings {
         $this->addAjaxAction( 'ails_get_activity_logs', [$this->linksController, 'get_activity_logs'] );
         // Delete Transients
         $this->addAjaxAction( 'ails_delete_transients', function () {
+            if ( !current_user_can( 'manage_options' ) ) {
+                wp_send_json_error( 'Unauthorized user', 403 );
+            }
+
+            if ( check_ajax_referer( 'ails__nonce', 'nonce', false ) == false ) {
+                wp_send_json_error( 'Invalid nonce', 419 );
+            }
+
             $this->settingsController->delete_all_transients( true );
         } );
         // Cron Testing
@@ -147,7 +155,6 @@ class Settings {
         );
         // Plugin operations
         add_action( 'update_option_' . self::PLUGIN_PAGE, [$this, 'clear_badge_cache'] );
-        add_action( 'wp_ajax_ails_sync_date', [$this, 'clear_badge_cache'], 5 );
         // AIOSEO special case
         if ( function_exists( 'aioseo' ) ) {
             add_action( 'aioseo_post_saved', [$this, 'clear_badge_cache'] );
@@ -369,6 +376,8 @@ class Settings {
             // Yoast
             'rank_math_focus_keyword',
             // RankMath
+            '_seopress_analysis_target_kw',
+            // SEOPress
             'disable_ails',
             // Plugin's own meta
             'disable_internal_links',
