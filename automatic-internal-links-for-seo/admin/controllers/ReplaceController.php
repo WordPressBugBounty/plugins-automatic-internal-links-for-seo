@@ -3,9 +3,12 @@ namespace Pagup\AutoLinks\Controllers;
 
 use html_changer\HtmlChanger;
 use Pagup\AutoLinks\Core\Option;
+use Pagup\AutoLinks\Traits\LanguageScope;
 
 class ReplaceController
 {
+    use LanguageScope;
+
     private $table = AILS_TABLE;
     private $table_log = AILS_LOG_TABLE;
     private $items;
@@ -89,6 +92,10 @@ class ReplaceController
             foreach ($this->items as $item) {
                 
                 if ( $post_id !== intval($item->post_id) ) {
+
+                    if (!$this->is_same_language_link_target((int) $post_id, $item)) {
+                        continue;
+                    }
 
                     if (in_array($item->keyword, $excluded_keywords)) {
                         continue;

@@ -4,7 +4,7 @@ Tags: internal links, anchor text, seo, link building, automatic linking
 Requires at least: 4.1
 Requires PHP: 7.4
 Tested up to: 7.0
-Stable tag: 2.0.7
+Stable tag: 2.0.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -54,7 +54,7 @@ Automatic Internal Links does **not** do the following:
 - it does **not** guarantee rankings
 - it does **not** replace editorial judgment for anchor text strategy
 - it does **not** support ACF content fields
-- it does **not** fully distinguish identical words across languages on multilingual sites
+- WPML language filtering applies only when both the source and destination languages are known; unresolved targets and Polylang sites still require manual validation
 - it does **not** add taxonomy or product category linking out of the box
 - it does **not** require an external AI or SaaS API
 
@@ -124,7 +124,8 @@ Automatic Internal Links supports focus keyword data from:
 Known limitations:
 
 - **ACF:** not supported for content processing
-- **WPML / Polylang:** partially supported; identical words across languages may still be ambiguous
+- **WPML:** version 2.0.8 keeps internal links in the same language when WPML resolves both endpoints; unresolved targets keep the existing behavior
+- **Polylang:** no equivalent language filter yet; validate generated links manually
 - **WooCommerce products:** Pro
 - **Taxonomy / category pages:** not covered by default
 
@@ -225,7 +226,7 @@ No. ACF content fields are not supported by the standard content processing work
 
 = Does it support WPML or Polylang? =
 
-Partially. The plugin can detect content across languages, but identical words used in different languages may still create ambiguity.
+WPML is supported for same-language internal links in version 2.0.8. When WPML reports a known language for both the source page and the destination, the plugin skips destinations in another language. If either language cannot be resolved, including external or custom URLs, the plugin keeps the existing behavior instead of suppressing the link. Polylang does not yet have an equivalent language filter and should be validated manually on multilingual sites.
 
 = Can I exclude areas, keywords, or URLs? =
 
@@ -272,6 +273,9 @@ Digital readability is the capacity of a website to be correctly understood by a
 4. Activity log and settings
 
 == Changelog ==
+
+= 2.0.8 =
+* Add WPML same-language link filtering, harden activation database migrations, and update the Freemius SDK to 2.13.4.
 
 = 2.0.7 =
 * Added SEOPress and AIOSEO as keyword sources for internal-link detection; security baseline hardening.

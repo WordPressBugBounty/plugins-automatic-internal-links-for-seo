@@ -9,8 +9,11 @@ class DBController {
     private const OPTION_NAME = 'autolinks_db_version';
 
     public function __construct() {
-        $this->table = AILS_TABLE;
-        $this->table_log = AILS_LOG_TABLE;
+        global $wpdb;
+
+        $prefix = isset($wpdb->prefix) ? $wpdb->prefix : '';
+        $this->table = defined('AILS_TABLE') ? AILS_TABLE : $prefix . 'auto_internal_links';
+        $this->table_log = defined('AILS_LOG_TABLE') ? AILS_LOG_TABLE : $prefix . 'auto_internal_log';
     }
 
     /**
@@ -124,7 +127,7 @@ class DBController {
      * @return void
      */
     public function db_check(): void {
-        if (get_site_option(self::OPTION_NAME) !== $this->db_version) {
+        if (get_option(self::OPTION_NAME) !== $this->db_version) {
             $this->migration();
         }
     }

@@ -63,6 +63,9 @@ class PluginManager {
 
     public function activate() : void {
         try {
+            $database = new DBController();
+            $database->migration();
+
             $options = get_option( 'automatic-internal-links-for-seo' );
             if ( !is_array( $options ) ) {
                 $defaultOptions = self::DEFAULT_OPTIONS;
