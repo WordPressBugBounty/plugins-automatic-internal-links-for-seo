@@ -9,6 +9,7 @@ class EndingTag implements HtmlPart {
     public $part = 'End';
     public $code = '';
     public $parent = null;
+    public $attributes = array();
 
     public function getType() {
         return $this->type;

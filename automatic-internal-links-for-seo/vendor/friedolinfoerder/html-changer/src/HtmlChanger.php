@@ -338,7 +338,7 @@ class HtmlChanger
                 $ignoreWordBoundary = array_key_exists('wordBoundary', $searchObject) && $searchObject['wordBoundary'] === false;
                 
                 if(!$ignoreWordBoundary) {
-                    $followingChar = mb_strtolower($this->getChar(1));
+                    $followingChar = mb_strtolower((string) $this->getChar(1));
                     $wordBounder = empty($followingChar) || preg_match("/^\W$/u", $followingChar);
                     
                     if(!$wordBounder) {
@@ -563,7 +563,7 @@ class HtmlChanger
 
     // PUBLIC METHODS
 
-    public function parts($onlyText = false, array $excludeElements = null)
+    public function parts($onlyText = false, ?array $excludeElements = null)
     {
         if(!empty($excludeElements)) {
             $nodes = [];

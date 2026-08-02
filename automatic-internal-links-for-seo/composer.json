@@ -1,4 +1,5 @@
 {
+    "license": "GPL-2.0-or-later",
     "autoload": {
         "psr-4": {
             "Pagup\\AutoLinks\\": "admin/",
@@ -11,5 +12,14 @@
     "require": {
         "php": ">=7.4",
         "friedolinfoerder/html-changer": "^0.1.6"
+    },
+    "scripts": {
+        "pagup:patch-html-changer": "@php composer-patches/apply-html-changer-php83.php",
+        "post-install-cmd": [
+            "@pagup:patch-html-changer"
+        ],
+        "post-update-cmd": [
+            "@pagup:patch-html-changer"
+        ]
     }
 }

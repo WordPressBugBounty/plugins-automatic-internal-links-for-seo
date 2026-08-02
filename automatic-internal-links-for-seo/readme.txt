@@ -4,7 +4,7 @@ Tags: internal links, anchor text, seo, link building, automatic linking
 Requires at least: 4.1
 Requires PHP: 7.4
 Tested up to: 7.0
-Stable tag: 2.0.8
+Stable tag: 2.0.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -273,6 +273,9 @@ Digital readability is the capacity of a website to be correctly understood by a
 4. Activity log and settings
 
 == Changelog ==
+
+= 2.0.9 =
+* Fix PHP 8.1 through 8.4 deprecations in the bundled HTML parser without changing generated HTML.
 
 = 2.0.8 =
 * Add WPML same-language link filtering, harden activation database migrations, and update the Freemius SDK to 2.13.4.
