@@ -13,6 +13,7 @@ use Pagup\AutoLinks\Controllers\{
 };
 use Pagup\AutoLinks\Core\Asset;
 use Pagup\AutoLinks\Core\Option;
+use Pagup\AutoLinks\AgentControl;
 use Pagup\AutoLinks\Traits\ErrorHandler;
 class Settings {
     use ErrorHandler;
@@ -67,6 +68,7 @@ class Settings {
         add_action( 'wp_footer', [$this, 'app_script'] );
         // Plugin Settings
         add_filter( "plugin_action_links_" . AILS_PLUGIN_BASE, [$this, 'setting_link'] );
+        add_filter( 'plugin_row_meta', [AgentControl::class, 'add_plugin_row_meta'], 10, 2 );
         add_filter(
             'script_loader_tag',
             [$this, 'add_module_to_script'],

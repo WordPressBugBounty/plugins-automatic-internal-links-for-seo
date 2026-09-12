@@ -4,7 +4,7 @@ Tags: internal links, anchor text, seo, link building, automatic linking
 Requires at least: 4.1
 Requires PHP: 7.4
 Tested up to: 7.0
-Stable tag: 2.0.9
+Stable tag: 2.0.10
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -265,6 +265,10 @@ When an AI system reads your site, it does not just look at individual pages. It
 Digital readability is the capacity of a website to be correctly understood by all four reading layers: humans, search engines, generative AI systems, and autonomous agents. Learn more at [pagup.com](https://pagup.com/en/glossary/digital-readability/).
 
 
+= How does PAGUP Agent Control relate to Automatic Internal Links? =
+
+Automatic Internal Links applies deterministic internal-linking rules. [PAGUP Agent Control](https://wpagentcontrol.com/) is a separate access layer that lets compatible AI agents audit or edit supported WordPress content within explicit permissions. It does not directly change Automatic Internal Links rules, synchronization jobs, or settings.
+
 == Screenshots ==
 
 1. Auto Links for SEO dashboard
@@ -273,6 +277,12 @@ Digital readability is the capacity of a website to be correctly understood by a
 4. Activity log and settings
 
 == Changelog ==
+
+= 2.0.10 =
+* Revalidated the bundled FREE and PRO Freemius SDK 2.13.4 trees against the official distribution; no SDK replacement was required.
+* Improved narrow-viewport settings and action layouts.
+* Added contextual Pagup Agent Control task examples with local status detection.
+* Updated all 9 supported admin locales for the new interface strings.
 
 = 2.0.9 =
 * Fix PHP 8.1 through 8.4 deprecations in the bundled HTML parser without changing generated HTML.
@@ -305,3 +315,8 @@ Digital readability is the capacity of a website to be correctly understood by a
 * IMPROVE: Disable internal links on individual pages via metabox
 
 Older release notes: [https://autolinksforseo.com/guides/changelog-ail](https://autolinksforseo.com/guides/changelog-ail)
+
+== Upgrade Notice ==
+
+= 2.0.10 =
+Maintenance release that revalidates Freemius 2.13.4 package integrity, improves narrow-screen administration, and adds localized Agent Control guidance without changing linking rules or synchronization behavior.

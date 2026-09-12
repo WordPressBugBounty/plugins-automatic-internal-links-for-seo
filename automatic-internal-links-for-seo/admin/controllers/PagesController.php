@@ -3,6 +3,7 @@
 namespace Pagup\AutoLinks\Controllers;
 
 use Pagup\AutoLinks\Core\Option;
+use Pagup\AutoLinks\AgentControl;
 use Pagup\AutoLinks\Traits\SettingHelper;
 use Pagup\AutoLinks\Controllers\DBController;
 use Pagup\AutoLinks\Controllers\SettingsController;
@@ -124,7 +125,8 @@ class PagesController extends SettingsController
             'purchase_url' => ails__fs()->get_upgrade_url(),
             'memory_limit' => $this->check_memory_limit(),
             'onboarding_status' => $this->get_onboarding_status(),
-            'system_status' => $system_status
+            'system_status' => $system_status,
+            'agent_control' => AgentControl::runtime_data()
         ));
 
         if ($system_status['tables_recreated']) {
