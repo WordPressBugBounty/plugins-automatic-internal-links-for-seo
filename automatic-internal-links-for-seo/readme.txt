@@ -3,8 +3,8 @@ Contributors: the-rock, pagup, freemius
 Tags: internal links, anchor text, seo, link building, automatic linking
 Requires at least: 4.1
 Requires PHP: 7.4
-Tested up to: 7.0
-Stable tag: 2.0.10
+Tested up to: 7.1
+Stable tag: 2.0.11
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -278,6 +278,10 @@ Automatic Internal Links applies deterministic internal-linking rules. [PAGUP Ag
 
 == Changelog ==
 
+= 2.0.11 =
+* Moved the Pagup Agent Control panel below the plugin's own settings so the internal linking options are reached first.
+* Declared compatibility with WordPress 7.1.
+
 = 2.0.10 =
 * Revalidated the bundled FREE and PRO Freemius SDK 2.13.4 trees against the official distribution; no SDK replacement was required.
 * Improved narrow-viewport settings and action layouts.
@@ -318,5 +322,5 @@ Older release notes: [https://autolinksforseo.com/guides/changelog-ail](https://
 
 == Upgrade Notice ==
 
-= 2.0.10 =
-Maintenance release that revalidates Freemius 2.13.4 package integrity, improves narrow-screen administration, and adds localized Agent Control guidance without changing linking rules or synchronization behavior.
+= 2.0.11 =
+Interface fix that restores the expected reading order on the Settings screen: the Automatic Internal Links options come first, and the Agent Control panel now closes the page. Linking rules, synchronization jobs, and settings are unchanged.
