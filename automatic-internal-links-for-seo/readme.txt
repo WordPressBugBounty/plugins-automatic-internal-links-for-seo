@@ -4,7 +4,7 @@ Tags: internal links, anchor text, seo, link building, automatic linking
 Requires at least: 4.1
 Requires PHP: 7.4
 Tested up to: 7.1
-Stable tag: 2.0.11
+Stable tag: 2.0.12
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -278,6 +278,12 @@ Automatic Internal Links applies deterministic internal-linking rules. [PAGUP Ag
 
 == Changelog ==
 
+= 2.0.12 =
+* Fixed the Black List URLs setting, which was recorded but never applied at render time: pages selected on the settings screen are now excluded from automatic linking, as intended. Configurations saved through the older free-text field keep working.
+* Fixed the Max Links count, which two rules from different tables could share when they carried the same numeric identifier. Each rule now keeps its own allowance, so pages where a rule was rendering no links will show them.
+* Made the choice between two rules for the same keyword deterministic when they share both a priority and a creation date. A page keeps the rule order cached before the update until that cache is renewed: at the latest when it expires, 14 days by default, or sooner through the purge behind the Delete Transient Cache button on the SYNC tab, which also runs after manual syncs. That purge only reaches transients stored in the database, and above 500 database rows it hands the deletion to WP-Cron.
+* Exclude Keywords now applies the exact match that its settings note describes, on every PHP version. A numeric keyword such as 123 was also excluded by a line writing the same number differently, such as 0123, 123.0 or 1.23e2, and on PHP 8 by 123 followed by a space. Those lines no longer exclude it, so its links can appear: write each excluded keyword exactly as the rule spells it.
+
 = 2.0.11 =
 * Moved the Pagup Agent Control panel below the plugin's own settings so the internal linking options are reached first.
 * Declared compatibility with WordPress 7.1.
@@ -322,5 +328,5 @@ Older release notes: [https://autolinksforseo.com/guides/changelog-ail](https://
 
 == Upgrade Notice ==
 
-= 2.0.11 =
-Interface fix that restores the expected reading order on the Settings screen: the Automatic Internal Links options come first, and the Agent Control panel now closes the page. Linking rules, synchronization jobs, and settings are unchanged.
+= 2.0.12 =
+Corrective release that changes what some pages render. The URL blacklist now takes effect, so excluded pages lose their automatic links. Rules no longer share a Max Links allowance, and Exclude Keywords now requires an exact match, so some pages will show links they did not show before.
