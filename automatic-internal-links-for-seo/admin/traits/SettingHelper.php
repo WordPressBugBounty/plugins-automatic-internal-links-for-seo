@@ -42,7 +42,7 @@ trait SettingHelper
         return (string) get_post_meta( $post_id, $focus_keyword_type, true );
     }
 
-    private function extract_aioseo_focus_keyword( $keyphrases ) : string {
+    protected function extract_aioseo_focus_keyword( $keyphrases ) : string {
         if ( empty( $keyphrases ) || !is_string( $keyphrases ) ) {
             return '';
         }
@@ -501,24 +501,25 @@ trait SettingHelper
         return $ids;
     }
 
-    /**
-     * Retrieves a string of allowed post types, formatted for use in SQL queries.
-     *
-     * Global Variables:
-     * @global wpdb $wpdb WordPress database abstraction object.
-     * @return string A string of post types formatted for an SQL IN clause.
-     */
-    public function post_types() : string {
+    /** Shared synchronization eligibility for counts, diagnosis and fetching. */
+    public function sync_post_types(): array
+    {
+        $types = Option::check('post_types') ? maybe_unserialize(Option::get('post_types')) : ['post', 'page'];
+        $types = is_array($types) ? array_values(array_unique(array_filter($types, function ($type) {
+            return is_string($type) && trim($type) !== '';
+        }))) : [];
+        // Product synchronization is a premium capability.
+        $types = array_values(array_diff($types, ['product']));
+
+        return $types;
+    }
+
+    public function post_types(): string
+    {
         global $wpdb;
-        $allowed_post_types = ( Option::check( 'post_types' ) ? maybe_unserialize( Option::get( 'post_types' ) ) : [] );
-        if ( in_array( 'product', $allowed_post_types ) ) {
-            unset($allowed_post_types[array_search( 'product', $allowed_post_types )]);
-        }
-        // Create a string of placeholders and prepare the whole list of post types
-        $placeholders = implode( ', ', array_fill( 0, count( $allowed_post_types ), '%s' ) );
-        $post_types = $wpdb->prepare( $placeholders, $allowed_post_types );
-        // $post_types is now a string ready to use in an IN clause
-        return $post_types;
+        $types = $this->sync_post_types();
+        // An empty allowed set must never produce the invalid SQL IN ().
+        return $types ? $wpdb->prepare(implode(', ', array_fill(0, count($types), '%s')), $types) : "''";
     }
 
     /**

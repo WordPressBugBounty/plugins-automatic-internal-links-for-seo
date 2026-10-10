@@ -4,7 +4,7 @@ Tags: internal links, anchor text, seo, link building, automatic linking
 Requires at least: 4.1
 Requires PHP: 7.4
 Tested up to: 7.1
-Stable tag: 2.0.12
+Stable tag: 2.0.13
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -277,6 +277,14 @@ Automatic Internal Links applies deterministic internal-linking rules. [PAGUP Ag
 4. Activity log and settings
 
 == Changelog ==
+
+= 2.0.13 =
+* Clarified synchronization states and the next action when no new items are found.
+* Simplified the welcome and first synchronization journey while preserving connection choices.
+* Added Check this page: preview generated links and explain exclusions using saved content.
+* Fixed automatic link selection on installations where the rule tables have legacy extra columns or a different column order. Existing rules and columns are preserved.
+* Database query failures are no longer cached as empty rule lists. Previously cached rule lists are renewed on first use after updating.
+* Updated Freemius SDK to the latest version
 
 = 2.0.12 =
 * Fixed the Black List URLs setting, which was recorded but never applied at render time: pages selected on the settings screen are now excluded from automatic linking, as intended. Configurations saved through the older free-text field keep working.

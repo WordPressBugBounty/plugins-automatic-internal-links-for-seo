@@ -17,22 +17,7 @@ class Bootstrap {
         'public_key' => 'pk_4ab073489df5c689f54a07bfd51d6',
         'error_prefix' => 'Auto Links',
         
-        // Freemius messages
-        'messages' => [
-            'connect' => [
-                'title' => 'Hey %1$s, %2$s Click on Allow & Continue to optimize your internal linking and boost your Ranking on search engines. You have no idea how much this plugin will simplify your life. %2$s Never miss an important update -- opt-in to our security and feature updates notifications. %2$s See you on the other side. %2$s Looking for more Wp plugins?',
-                'more_plugins' => [
-                    'Meta Tags for SEO' => 'meta-tags-for-seo',
-                    'Auto internal links for SEO' => 'automatic-internal-links-for-seo',
-                    'Bulk auto image Alt Text' => 'bulk-image-alt-text-with-yoast',
-                    'Bulk auto image Title Tag' => 'bulk-image-title-attribute',
-                    'Mobile view' => 'mobilook',
-                    'Better-Robots.txt' => 'better-robots-txt',
-                    'Wp Google Street View' => 'wp-google-street-view',
-                    'VidSeo' => 'vidseo'
-                ]
-            ]
-        ]
+        'messages' => []
     ];
 
     /**

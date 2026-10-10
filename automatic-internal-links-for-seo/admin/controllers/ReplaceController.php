@@ -13,33 +13,48 @@ class ReplaceController
     private $table_log = AILS_LOG_TABLE;
     private $items;
 
-    public function __construct()
+    private $diagnostic = null;
+    private $preview_post_id = null;
+
+    public function __construct(bool $register = true)
     {
-        add_filter( 'the_content', array( &$this, 'replace' ), 99999 );
+        if ($register) {
+            add_filter( 'the_content', array( &$this, 'replace' ), 99999 );
+        }
     }
 
     /**
      * Get all items from the database
      * 
-     * @return object
+     * @return array
     */
     public function get_items($post_id, $content, $expiration)
     {
         global $wpdb;
+        if ($this->diagnostic !== null) {
+            return $this->preview_items($content);
+        }
 
-        $item = get_transient( "ailsitem{$post_id}" );
+        // New query contract: do not reuse empty results cached after a SQL
+        // failure, or rows whose values followed a different column order.
+        // Keep the ailsitem prefix used by the existing cache purge.
+        $cache_key = "ailsitem_v2_{$post_id}";
+        $item = get_transient( $cache_key );
 
         if ( false === $item ) {
-            // Prepare the SQL query with proper escaping
+            // Legacy installations may retain extra columns, or store the
+            // same columns in a different physical order. UNION aligns by
+            // position, so both sides must project the same named fields.
+            $columns = 'id, post_id, title, keyword, url, use_custom, new_tab, nofollow, case_sensitive, partial_match, bold, priority, max_links, status, post_type, created_at, updated_at';
             $sql = $wpdb->prepare(
                 // ails_source and id close the ordering. Without them, two rows with
                 // the same priority AND the same creation date arrive in whatever
                 // order the database happens to return, and the rule elected below
                 // would change from one request to the next.
                 "SELECT * FROM
-                (SELECT *, 0 AS ails_source FROM $this->table_log WHERE INSTR(%s, keyword) > 0
+                (SELECT $columns, 0 AS ails_source FROM $this->table_log WHERE INSTR(%s, keyword) > 0
                 UNION ALL
-                SELECT *, 1 AS ails_source FROM $this->table WHERE INSTR(%s, keyword) > 0)
+                SELECT $columns, 1 AS ails_source FROM $this->table WHERE INSTR(%s, keyword) > 0)
                 AS combined_tables
                 ORDER BY priority ASC, created_at ASC, ails_source ASC, id ASC",
                 $content, $content
@@ -47,10 +62,16 @@ class ReplaceController
 
             $item = $wpdb->get_results($sql);
 
+            // wpdb can return an empty array on failure too. Retry next
+            // request instead of caching a database error as "no rules".
+            if ( ! empty($wpdb->last_error) || ! is_array($item) ) {
+                return array();
+            }
+
             $time = 60 * 60 * 24 * $expiration;
 
             // Cache the query results in transient for future use
-            set_transient( "ailsitem{$post_id}", $item, $time );
+            set_transient( $cache_key, $item, $time );
         }
 
         return $item;
@@ -64,10 +85,11 @@ class ReplaceController
     */
     public function replace( string $content ) {
 
-        $post_id = get_the_ID();
+        $post_id = $this->preview_post_id ?? get_the_ID();
 
         // Check if internal links are disabled for this specific page
         if (!empty($post_id) && get_post_meta($post_id, 'disable_internal_links', true)) {
+            $this->diagnose_page('page_disabled');
             return $content;
         }
 
@@ -76,6 +98,7 @@ class ReplaceController
         $this->items = $this->get_items($post_id, $content, $expiration_days);
 
         if ( !empty($post_id) && is_numeric($post_id) && in_array((int)$post_id, $this->blacklist(), true) ) {
+            $this->diagnose_page('blacklisted_page');
             return $content;
         }
 
@@ -85,19 +108,26 @@ class ReplaceController
 
         $excluded_keywords = explode("\n", str_replace("\r", "", $exclude));
 
-        if ( is_singular($post_types) ) {
+        $is_selected = $this->preview_post_id !== null
+            ? (empty($post_types) || in_array(get_post_type($post_id), (array) $post_types, true))
+            : is_singular($post_types);
+        if ( $is_selected ) {
 
-            $post_id = get_the_id();
+            $post_id = $this->preview_post_id ?? get_the_id();
 
             $keywords = [];
 
             $max_links = $this->override('max_links') ? intval(Option::get('max_links')) : "";
 
             foreach ($this->items as $item) {
+                if ($post_id === intval($item->post_id)) {
+                    $this->diagnose_reason($item, 'self_link');
+                }
                 
                 if ( $post_id !== intval($item->post_id) ) {
 
                     if (!$this->is_same_language_link_target((int) $post_id, $item)) {
+                        $this->diagnose_reason($item, 'language');
                         continue;
                     }
 
@@ -107,6 +137,7 @@ class ReplaceController
                     // on PHP 8 and not on 7.4. A line now excludes only the
                     // keyword it spells exactly, on every version.
                     if (in_array((string) $item->keyword, $excluded_keywords, true)) {
+                        $this->diagnose_reason($item, 'excluded_keyword');
                         continue;
                     }
 
@@ -122,6 +153,9 @@ class ReplaceController
                     // independent AUTO_INCREMENTs and dates are kept to the
                     // second.
 
+                    if (isset($keywords[$item->keyword])) {
+                        $this->diagnose_reason($keywords[$item->keyword]['value'], 'superseded');
+                    }
                     if (Option::check("enable_override")) {
                         $keywords[$item->keyword] = array (
                             'value' => $item,
@@ -166,24 +200,158 @@ class ReplaceController
             $htmlChanger = new HtmlChanger($content, $instance);
     
             $htmlChanger->replace(function ($text, $value) {
-                return $this->link($text, $value);
+                $html = $this->link($text, $value);
+                if ($this->diagnostic !== null) {
+                    $key = $this->rule_key($value);
+                    $row = &$this->diagnostic['rules'][$key];
+                    $row['reason'] = 'generated';
+                    $row['generated']++;
+                    $this->diagnostic['generated']++;
+                    if (count($row['examples']) < 3) {
+                        $row['examples'][] = ['text' => html_entity_decode(strip_tags($text), ENT_QUOTES, 'UTF-8'), 'html' => $html];
+                    }
+                    unset($row);
+                }
+                return $html;
             });
+            $this->finish_preview($content, $keywords, $instance['ignore']);
     
             return $htmlChanger->html();
     
         }
 
-		return $content;
+        $this->diagnose_page('post_type');
+        return $content;
     
     }
 
-    /**
-     * Accepts text (to modify) and item object (with settings) and do link formation
-     * 
-     * @param string $text
-     * @param object $item
-     * @return string
-    */
+    /** Read-only preview of stored content through the same replacement engine. */
+    public function preview(int $post_id, string $content): array
+    {
+        if (strlen($content) > 262144) {
+            throw new \RuntimeException('content_too_large');
+        }
+        $this->preview_post_id = $post_id;
+        $this->diagnostic = ['page_reason' => null, 'rules' => [], 'generated' => 0];
+        try {
+            $this->replace($content);
+            $this->diagnostic['rules'] = array_values($this->diagnostic['rules']);
+            return $this->diagnostic;
+        } finally {
+            $this->preview_post_id = null;
+            $this->diagnostic = null;
+        }
+    }
+
+    private function rule_key(object $item): string
+    {
+        return (string) $item->ails_source . ':' . (string) $item->id;
+    }
+
+    private function diagnose_reason(object $item, string $reason): void
+    {
+        if ($this->diagnostic !== null) {
+            $this->diagnostic['rules'][$this->rule_key($item)]['reason'] = $reason;
+        }
+    }
+
+    private function diagnose_page(string $reason): void
+    {
+        if ($this->diagnostic !== null) {
+            $this->diagnostic['page_reason'] = $reason;
+        }
+    }
+
+    private function preview_items(string $content): array
+    {
+        global $wpdb;
+        $columns = 'id, post_id, title, keyword, url, use_custom, new_tab, nofollow, case_sensitive, partial_match, bold, priority, max_links, status, post_type, created_at, updated_at';
+        // Match selection uses the real database collation, just like get_items().
+        // The preview reads fresh rules and never writes to the rendering cache.
+        $rows = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM (
+                SELECT $columns, 0 AS ails_source, INSTR(%s, keyword) > 0 AS ails_matches FROM $this->table_log
+                UNION ALL
+                SELECT $columns, 1 AS ails_source, INSTR(%s, keyword) > 0 AS ails_matches FROM $this->table
+             ) combined_tables ORDER BY priority ASC, created_at ASC, ails_source ASC, id ASC LIMIT 1001",
+            $content, $content
+        ));
+        if ($wpdb->last_error !== '' || !is_array($rows)) {
+            throw new \RuntimeException('query_error');
+        }
+        if (count($rows) > 1000) {
+            throw new \RuntimeException('too_many_rules');
+        }
+        $matched = [];
+        foreach ($rows as $item) {
+            $key = $this->rule_key($item);
+            $this->diagnostic['rules'][$key] = [
+                'key' => $key,
+                'keyword' => (string) $item->keyword,
+                'title' => (string) $item->title,
+                'url' => esc_url_raw((string) ($item->use_custom == '0' ? get_permalink($item->post_id) : $item->url), ['http', 'https']),
+                'reason' => 'expression_absent',
+                'generated' => 0,
+                'examples' => [],
+                'quota_limited' => false,
+                'excluded_markup' => false,
+            ];
+            if ((int) $item->ails_matches && (string) $item->keyword !== '') {
+                $matched[] = $item;
+                $this->diagnose_reason($item, 'matching_options');
+            }
+        }
+        if (!$rows) {
+            $this->diagnose_page('no_rules');
+        }
+        return $matched;
+    }
+
+    /** Counterfactual counts use HtmlChanger itself, never another matcher. */
+    private function preview_counts(string $content, array $keywords, array $ignore): array
+    {
+        foreach ($keywords as &$config) {
+            $config['maxCount'] = -1;
+        }
+        unset($config);
+        $counts = [];
+        $probe = new HtmlChanger($content, ['search' => $keywords, 'ignore' => $ignore]);
+        $probe->replace(function ($text, $item) use (&$counts) {
+            $key = $this->rule_key($item);
+            $counts[$key] = ($counts[$key] ?? 0) + 1;
+            return $text;
+        });
+        return $counts;
+    }
+
+    private function finish_preview(string $content, array $keywords, array $ignore): void
+    {
+        if ($this->diagnostic === null || !$keywords) {
+            return;
+        }
+        $eligible = $this->preview_counts($content, $keywords, $ignore);
+        $unexcluded = $this->preview_counts($content, $keywords, []);
+        foreach ($keywords as $config) {
+            $key = $this->rule_key($config['value']);
+            $row = &$this->diagnostic['rules'][$key];
+            $count = $eligible[$key] ?? 0;
+            $row['quota_limited'] = $config['maxCount'] >= 0 && $row['generated'] >= $config['maxCount'] && $count > $row['generated'];
+            $row['excluded_markup'] = ($unexcluded[$key] ?? 0) > $count;
+            if ($row['generated'] === 0) {
+                if ($row['quota_limited']) {
+                    $row['reason'] = 'quota_reached';
+                } elseif ($count === 0 && $row['excluded_markup']) {
+                    $row['reason'] = 'excluded_markup';
+                } else {
+                    // May include overlapping phrases. Do not invent a more
+                    // specific cause than the engine's observations establish.
+                    $row['reason'] = 'matching_options';
+                }
+            }
+            unset($row);
+        }
+    }
+
     public function link(string $text, object $item): string
     {
 		if ($item->use_custom == "0" ) {

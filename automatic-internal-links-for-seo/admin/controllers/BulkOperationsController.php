@@ -84,7 +84,7 @@ class BulkOperationsController extends SettingsController {
     
         $data = $this->validateAddRequest($post_data);
         
-        if (empty($data['post_id']) || empty($data['title']) || empty($data['keyword'])) {
+        if (empty($data['post_id']) || empty($data['title']) || trim((string) $data['keyword']) === '') {
             error_log('Missing required fields');
             $this->handleError(
                 'missing_required', 

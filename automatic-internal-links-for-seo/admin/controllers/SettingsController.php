@@ -362,7 +362,7 @@ class SettingsController
                 SELECT COUNT(DISTINCT p.ID)
                 FROM {$wpdb->posts} p
                 INNER JOIN {$wpdb->prefix}aioseo_posts ap ON p.ID = ap.post_id
-                LEFT JOIN {$this->table_log} log ON p.ID = log.post_id
+                LEFT JOIN (SELECT DISTINCT post_id FROM {$this->table_log}) log ON p.ID = log.post_id
                 WHERE 
                     p.post_type IN ($placeholders)
                     AND p.post_status = 'publish'
@@ -384,7 +384,7 @@ class SettingsController
             $query = $wpdb->prepare("
                 SELECT COUNT(DISTINCT pm.post_id)
                 FROM {$wpdb->postmeta} pm
-                LEFT JOIN {$this->table_log} log ON pm.post_id = log.post_id
+                LEFT JOIN (SELECT DISTINCT post_id FROM {$this->table_log}) log ON pm.post_id = log.post_id
                 LEFT JOIN {$wpdb->posts} p ON pm.post_id = p.ID
                 WHERE 
                     p.post_type IN ($placeholders)
@@ -418,11 +418,7 @@ class SettingsController
      */
     private function get_post_types_array(): array 
     {
-        $post_types = Option::check('post_types') 
-            ? maybe_unserialize(Option::get('post_types')) 
-            : ['post', 'page'];
-
-        return array_filter($post_types); // Remove any empty values
+        return $this->sync_post_types();
     }
 
     /**
@@ -640,7 +636,7 @@ class SettingsController
                     "SELECT post_id, meta_value
                         FROM {$wpdb->postmeta}
                         WHERE post_id IN ($ids_string)
-                        AND meta_key = %s",
+                        AND meta_key = %s ORDER BY meta_id ASC",
                     $focus_keyword_type
                 );
 
@@ -652,6 +648,9 @@ class SettingsController
         }
 
         foreach ($ids as $id) {
+            if ($keyword === true && trim(sanitize_text_field((string) ($keywords[$id] ?? ''))) === '') {
+                continue;
+            }
             $title = get_the_title($id);
             
             // Skip posts with empty titles

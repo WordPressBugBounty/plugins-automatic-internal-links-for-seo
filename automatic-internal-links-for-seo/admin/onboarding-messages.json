@@ -1,0 +1,47 @@
+{
+  "en-US": {
+    "benefit": "Create internal links from the focus keywords in your existing content, without adding each link by hand.",
+    "next": "After this step, open Sync to import your keywords and review the links to create. Your connection choice is explained below.",
+    "licenseNext": "After this step, open Sync to import your keywords. Enter your license key or choose the free version below."
+  },
+  "fr-FR": {
+    "benefit": "Créez des liens internes à partir des mots-clés principaux de vos contenus existants, sans ajouter chaque lien à la main.",
+    "next": "Après cette étape, ouvrez SYNC pour importer vos mots-clés et vérifier les liens à créer. Le choix de connexion est expliqué ci-dessous.",
+    "licenseNext": "Après cette étape, ouvrez SYNC pour importer vos mots-clés. Saisissez votre clé de licence ou choisissez la version gratuite ci-dessous."
+  },
+  "fr-CA": {
+    "benefit": "Créez des liens internes à partir des mots-clés principaux de vos contenus existants, sans ajouter chaque lien à la main.",
+    "next": "Après cette étape, ouvrez SYNC pour importer vos mots-clés et vérifier les liens à créer. Le choix de connexion est expliqué ci-dessous.",
+    "licenseNext": "Après cette étape, ouvrez SYNC pour importer vos mots-clés. Saisissez votre clé de licence ou choisissez la version gratuite ci-dessous."
+  },
+  "de-DE": {
+    "benefit": "Erstellen Sie interne Links aus den Fokus-Keywords Ihrer bestehenden Inhalte, ohne jeden Link von Hand einzufügen.",
+    "next": "Öffnen Sie anschließend SYNC, um Ihre Keywords zu importieren und die zu erstellenden Links zu prüfen. Die Verbindungsauswahl wird unten erklärt.",
+    "licenseNext": "Öffnen Sie danach Sync, um Ihre Keywords zu importieren. Geben Sie Ihren Lizenzschlüssel ein oder wählen Sie unten die kostenlose Version."
+  },
+  "es-ES": {
+    "benefit": "Cree enlaces internos a partir de las palabras clave principales de su contenido existente, sin añadir cada enlace a mano.",
+    "next": "Después de este paso, abra SYNC para importar sus palabras clave y revisar los enlaces que se crearán. La elección de conexión se explica a continuación.",
+    "licenseNext": "Después de este paso, abra Sync para importar sus palabras clave. Introduzca su clave de licencia o elija la versión gratuita a continuación."
+  },
+  "it-IT": {
+    "benefit": "Crea link interni a partire dalle parole chiave principali dei contenuti esistenti, senza inserire ogni link a mano.",
+    "next": "Dopo questo passaggio, apri SYNC per importare le parole chiave e controllare i link da creare. La scelta di connessione è spiegata di seguito.",
+    "licenseNext": "Dopo questo passaggio, apri Sync per importare le parole chiave. Inserisci la chiave di licenza o scegli la versione gratuita qui sotto."
+  },
+  "nl-NL": {
+    "benefit": "Maak interne links op basis van de focuszoekwoorden van uw bestaande inhoud, zonder elke link handmatig toe te voegen.",
+    "next": "Open hierna SYNC om uw zoekwoorden te importeren en de aan te maken links te controleren. De verbindingskeuze wordt hieronder uitgelegd.",
+    "licenseNext": "Open hierna Sync om je zoekwoorden te importeren. Voer je licentiesleutel in of kies hieronder de gratis versie."
+  },
+  "pt-PT": {
+    "benefit": "Crie ligações internas a partir das palavras-chave principais dos seus conteúdos existentes, sem adicionar cada ligação à mão.",
+    "next": "Após este passo, abra SYNC para importar as palavras-chave e rever as ligações a criar. A escolha de ligação ao serviço é explicada abaixo.",
+    "licenseNext": "Após este passo, abra Sync para importar as palavras-chave. Introduza a chave de licença ou escolha a versão gratuita abaixo."
+  },
+  "ru-RU": {
+    "benefit": "Создавайте внутренние ссылки на основе фокусных ключевых слов существующих материалов без ручного добавления каждой ссылки.",
+    "next": "После этого откройте SYNC, чтобы импортировать ключевые слова и проверить создаваемые ссылки. Варианты подключения описаны ниже.",
+    "licenseNext": "После этого шага откройте Sync для импорта ключевых слов. Введите лицензионный ключ или выберите бесплатную версию ниже."
+  }
+}

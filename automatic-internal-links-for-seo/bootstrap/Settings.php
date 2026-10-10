@@ -97,6 +97,11 @@ class Settings {
         $this->addAjaxAction( 'ails_save_options', [$this->settingsController, 'save_options'] );
         $this->addAjaxAction( 'ails_search_posts', [$this->settingsController, 'search_posts_callback'] );
         $this->addAjaxAction( 'ails_update_onboarding', [$this->settingsController, 'update_onboarding'] );
+        // Fresh Sync diagnosis is authenticated and never uses the badge cache.
+        $this->addAjaxAction('ails_sync_status', [new \Pagup\AutoLinks\Controllers\SyncStatusController(), 'status']);
+        $pageCheck = new \Pagup\AutoLinks\Controllers\PageCheckController();
+        $this->addAjaxAction('ails_page_check_search', [$pageCheck, 'search']);
+        $this->addAjaxAction('ails_page_check', [$pageCheck, 'check']);
         // Bulk Operations
         $this->addAjaxAction( 'ails_bulk_add', [$this->bulkController, 'add'] );
         $this->addAjaxAction( 'ails_bulk_fetch', [$this->bulkController, 'fetch'] );

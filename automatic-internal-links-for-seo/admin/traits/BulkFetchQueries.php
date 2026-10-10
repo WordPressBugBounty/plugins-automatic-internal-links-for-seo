@@ -15,6 +15,9 @@ trait BulkFetchQueries {
      * @return array An array of post IDs.
      */
     private function fetchPosts(array $request): array {
+        if (!$this->sync_post_types()) {
+            return [];
+        }
         global $wpdb;
         
         // Calculate remaining items for last page
@@ -34,6 +37,9 @@ trait BulkFetchQueries {
             : $this->getDefaultQuery($request);
 
         $post_ids = $wpdb->get_results($query, ARRAY_N);
+        if ($wpdb->last_error !== '' || !is_array($post_ids)) {
+            throw new \RuntimeException('Sync query failed');
+        }
         return empty($post_ids) ? [] : array_column($post_ids, 0);
     }
 
@@ -57,7 +63,7 @@ trait BulkFetchQueries {
            SELECT p.ID as post_id
            FROM {$wpdb->posts} p
            INNER JOIN {$wpdb->prefix}aioseo_posts ap ON p.ID = ap.post_id
-           LEFT JOIN {$this->table_log} log ON p.ID = log.post_id
+           LEFT JOIN (SELECT DISTINCT post_id FROM {$this->table_log}) log ON p.ID = log.post_id
            WHERE 
                p.post_type IN ({$this->post_types()})
                AND p.post_status = 'publish'
@@ -97,9 +103,9 @@ trait BulkFetchQueries {
         $offset = absint($request['offset']);
         
         return $wpdb->prepare("
-            SELECT pm.post_id
+            SELECT DISTINCT pm.post_id
             FROM {$wpdb->postmeta} pm
-            LEFT JOIN {$this->table_log} log ON pm.post_id = log.post_id
+            LEFT JOIN (SELECT DISTINCT post_id FROM {$this->table_log}) log ON pm.post_id = log.post_id
             LEFT JOIN {$wpdb->posts} p ON pm.post_id = p.ID
             WHERE 
                 p.post_type IN ({$this->post_types()})
@@ -113,7 +119,7 @@ trait BulkFetchQueries {
                     WHERE pm2.post_id = pm.post_id
                         AND pm2.meta_key = 'disable_ails'
                 )
-            ORDER BY pm.meta_id ASC
+            ORDER BY pm.post_id ASC
             LIMIT %d OFFSET %d
         ", $this->focus_keyword(), $batchSize, $offset);
      }

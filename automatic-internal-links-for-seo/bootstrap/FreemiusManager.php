@@ -34,6 +34,7 @@ class FreemiusManager {
      */
     private function addFilters(): void {
         add_filter('fs_connect_message_' . $this->pluginSlug, [$this, 'customConnectMessage'], 10, 6);
+        add_filter('fs_connect-message_on-premium_' . $this->pluginSlug, [$this, 'customPremiumConnectMessage'], 10, 3);
         add_filter('fs_plugin_icon_' . $this->pluginSlug, [$this, 'customPluginIcon']);
     }
 
@@ -51,8 +52,8 @@ class FreemiusManager {
         ];
         
         foreach ($urlFilters as $filter) {
-            add_filter('fs_' . $filter . '_' . $this->pluginSlug, function() use ($settingsUrl) {
-                return $settingsUrl;
+            add_filter('fs_' . $filter . '_' . $this->pluginSlug, function() use ($settingsUrl, $filter) {
+                return $settingsUrl . ($filter === 'connect_url' ? '' : '#/sync');
             });
         }
     }
@@ -68,14 +69,39 @@ class FreemiusManager {
         $siteLink,
         $freemiusLink
     ): string {
-        $break = "<br><br>";
-        $morePlugins = $this->getMorePluginsHtml();
+        // Retain the SDK's own opt-in / permission explanation and controls.
+        // Product copy stays outside the unmodified upstream SDK.
+        $copy = $this->welcomeCopy();
+        return esc_html($copy['benefit']) . '<br><br>' . esc_html($copy['next']) . '<br><br>' . $message;
+    }
 
-        return sprintf(
-            esc_html__('Hey %1$s, %2$s Click on Allow & Continue to optimize your internal linking and boost your Ranking on search engines. You have no idea how much this plugin will simplify your life. %2$s Never miss an important update -- opt-in to our security and feature updates notifications. %2$s See you on the other side. %2$s Looking for more Wp plugins?', 'automatic-internal-links-for-seo'),
-            $userFirstName,
-            $break
-        ) . $morePlugins;
+    public function customPremiumConnectMessage($message, $userFirstName, $productTitle): string
+    {
+        $copy = $this->welcomeCopy();
+        return esc_html($copy['benefit']) . '<br><br>' . esc_html($copy['licenseNext'] ?? $copy['next']) . '<br><br>' . $message;
+    }
+
+    private function welcomeCopy(): array
+    {
+        $locale = str_replace('_', '-', function_exists('determine_locale') ? determine_locale() : get_locale());
+        // Same locale fallback order as the Vue admin. Generated from its catalog.
+        $catalog = json_decode(file_get_contents(AILS_PLUGIN_ROOT . 'admin/onboarding-messages.json'), true);
+        if (!is_array($catalog)) {
+            return [
+                'benefit' => __('Create internal links from the focus keywords in your existing content, without adding each link by hand.', 'automatic-internal-links-for-seo'),
+                'next' => __('After this step, open Sync to import your keywords and review the links to create. Your connection choice is explained below.', 'automatic-internal-links-for-seo'),
+            ];
+        }
+        if (isset($catalog[$locale])) {
+            return $catalog[$locale];
+        }
+        $language = strtolower(explode('-', $locale)[0]);
+        foreach ($catalog as $supported => $copy) {
+            if (explode('-', $supported)[0] === $language) {
+                return $copy;
+            }
+        }
+        return $catalog['en-US'];
     }
 
     /**
@@ -85,18 +111,4 @@ class FreemiusManager {
         return AILS_PLUGIN_ROOT . 'admin/assets/icon.jpg';
     }
 
-    /**
-     * Get HTML for recommended plugins
-     */
-    private function getMorePluginsHtml(): string {
-        $plugins = $this->messages['connect']['more_plugins'];
-
-        return '<p>' . implode(', ', array_map(function($name, $slug) {
-            return sprintf(
-                '<a target="_blank" href="https://wordpress.org/plugins/%s/">%s</a>',
-                esc_attr($slug),
-                esc_html($name)
-            );
-        }, array_keys($plugins), $plugins)) . '</p>';
-    }
 }
