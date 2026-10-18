@@ -157,6 +157,9 @@ class PagesController extends SettingsController
         // var_dump($cached_data ? 'SYNC REQ VALUE FROM CACHE' : 'SYNC REQ VALUE FROM DATABASE');
 
         echo '<div id="autolinks__app"></div>';
+        echo '<template id="pagup-fy2press-discovery">';
+        \Pagup_Fy2Press_Discovery_V1::render( 'automatic-internal-links-for-seo' );
+        echo '</template>';
     }
 
     private function get_cached_sync_totals(): array {

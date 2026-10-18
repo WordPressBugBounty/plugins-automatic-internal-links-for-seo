@@ -4,7 +4,7 @@ Tags: internal links, anchor text, seo, link building, automatic linking
 Requires at least: 4.1
 Requires PHP: 7.4
 Tested up to: 7.1
-Stable tag: 2.0.13
+Stable tag: 2.0.14
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -277,6 +277,11 @@ Automatic Internal Links applies deterministic internal-linking rules. [PAGUP Ag
 4. Activity log and settings
 
 == Changelog ==
+
+= 2.0.14 =
+* Added an optional Fy2Press discovery card after the plugin settings, with local images and direct links without tracking.
+* Remember dismissal per user and site across participating PAGUP plugins; hide the card when Fy2Press is installed.
+
 
 = 2.0.13 =
 * Clarified synchronization states and the next action when no new items are found.

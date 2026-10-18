@@ -4,7 +4,7 @@
 * Plugin Name: Automatic Internal Links for SEO by Pagup
 * Description: This fully automated plugin creates and boosts your internal linking in 2 clicks, using Yoast, Rank Math, SEOPress, or All in One SEO focus keywords as anchor text for internal link building.
 * Author: Pagup
-* Version: 2.0.13
+* Version: 2.0.14
 * Requires at least: 4.1
 * Tested up to: 7.1
 * Author URI: https://pagup.com/
@@ -15,6 +15,9 @@
 if ( !defined( 'ABSPATH' ) ) {
     exit;
 }
+// Local discovery card; no network calls or telemetry.
+require_once __DIR__ . '/admin/Fy2PressDiscovery.php';
+Pagup_Fy2Press_Discovery_V1::register( 'automatic-internal-links-for-seo', 'content', __FILE__, '' );
 // Define plugin root directory
 if ( !defined( 'AILS_PLUGIN_ROOT' ) ) {
     define( 'AILS_PLUGIN_ROOT', plugin_dir_path( __FILE__ ) );
